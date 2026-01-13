@@ -2,232 +2,193 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
+    <title>人生數字探索</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>重義哥：2026 新年開運輪盤</title>
     <style>
-        :root { --gold: #FFD700; --red: #D32F2F; --dark-red: #8B0000; }
         body {
-            font-family: 'Microsoft JhengHei', sans-serif;
-            background-color: #1a1a1a; color: white;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 100vh; margin: 0; overflow: hidden;
+            font-family: "Noto Sans TC", Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #e4efe9);
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
-        .machine-container {
-            background: linear-gradient(145deg, #333, #000);
-            padding: 25px; border: 8px solid #555; border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8); width: 350px; text-align: center;
+        .container {
+            max-width: 520px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .display-board {
-            display: flex; justify-content: space-around; background: #000;
-            padding: 10px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #444;
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
         }
-        .digit { color: #ff3d00; font-family: 'Courier New', monospace; font-size: 28px; font-weight: bold; }
-        .label { font-size: 12px; color: #aaa; margin-bottom: 5px; }
-
-        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 25px; }
-        .cell {
-            width: 75px; height: 75px; background: #333; border: 2px solid #444; border-radius: 10px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 26px; transition: all 0.1s;
+        .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
         }
-        .cell.active { background: var(--gold); box-shadow: 0 0 25px var(--gold); transform: scale(1.1); border-color: #fff; color: #000; }
-        .cell span { font-size: 12px; color: #fff; margin-top: 5px; }
-        .cell.active span { color: #000; }
-
-        .bet-area { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
-        .bet-btn { 
-            background: #444; border: 1px solid #666; color: white; padding: 10px 5px; 
-            border-radius: 8px; cursor: pointer; position: relative; font-size: 18px;
+        label {
+            font-weight: bold;
         }
-        .bet-btn:hover { background: #555; }
-        .bet-count { position: absolute; top: -8px; right: -8px; background: var(--red); font-size: 12px; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--gold); }
-
-        .controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
-        .coin-btn {
-            width: 80px; height: 90px; background: #c0c0c0; border: 4px outset #eee; border-radius: 10px;
-            cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
         }
-        .coin-btn:active { border-style: inset; background: #aaa; }
-        .coin-slot-line { width: 10px; height: 40px; background: #222; border-radius: 5px; margin-bottom: 5px; }
-        
-        .run-btn {
-            width: 110px; height: 110px; background: radial-gradient(circle, #ff4d4d, #b30000);
-            border-radius: 50%; border: 4px solid #fff; color: white; font-size: 24px; font-weight: bold; 
-            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background-color: #5c8df6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
         }
-        .run-btn:active { transform: scale(0.95); box-shadow: none; }
-
-        /* 彈出祝福視窗 */
-        #modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000;
+        button:hover {
+            background-color: #4a7be0;
         }
-        #modal-content {
-            background: linear-gradient(135deg, var(--red), var(--dark-red));
-            padding: 40px; border-radius: 25px; border: 5px solid var(--gold);
-            width: 85%; max-width: 400px; text-align: center; color: white;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4); transform: scale(0.7); transition: 0.3s;
+        .result {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: none;
         }
-        #modal-overlay.show { display: flex; }
-        #modal-overlay.show #modal-content { transform: scale(1); }
-        .close-btn {
-            margin-top: 30px; padding: 12px 30px; background: var(--gold); color: #000;
-            border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 18px;
+        .number {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            color: #5c8df6;
+        }
+        .highlight {
+            text-align: center;
+            font-size: 18px;
+            margin: 12px 0;
+        }
+        .section {
+            margin-top: 16px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 6px;
         }
     </style>
 </head>
 <body>
 
-    <h2 style="color:var(--gold); text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🏮 2026 重義哥：開運大輪盤 🏮</h2>
-
-    <div class="machine-container">
-        <div class="display-board">
-            <div><div class="label">餘額 (CREDITS)</div><div id="credits" class="digit">0</div></div>
-            <div><div class="label">中獎 (WIN)</div><div id="win" class="digit">0</div></div>
-        </div>
-
-        <div class="grid-container">
-            <div class="cell" id="c0">🧧<span>x20</span></div>
-            <div class="cell" id="c1">💰<span>x15</span></div>
-            <div class="cell" id="c2">🧨<span>x10</span></div>
-            <div class="cell" id="c3">🏮<span>x5</span></div>
-            <div class="cell" id="c7">🌟<span>x50</span></div>
-            <div class="cell" style="background:transparent; border:none;"></div>
-            <div class="cell" style="background:transparent; border:none;"></div>
-            <div class="cell" id="c4">🍎<span>x2</span></div>
-            <div class="cell" id="c6">🍊<span>x2</span></div>
-            <div class="cell" id="c5">🍬<span>x2</span></div>
-        </div>
-
-        <div class="bet-area">
-            <button class="bet-btn" onclick="placeBet('🧧')">🧧<div class="bet-count" id="bet-🧧">0</div></button>
-            <button class="bet-btn" onclick="placeBet('💰')">💰<div class="bet-count" id="bet-💰">0</div></button>
-            <button class="bet-btn" onclick="placeBet('🧨')">🧨<div class="bet-count" id="bet-🧨">0</div></button>
-            <button class="bet-btn" onclick="placeBet('🏮')">🏮<div class="bet-count" id="bet-🏮">0</div></button>
-            <button class="bet-btn" onclick="placeBet('🍎')">🍎<div class="bet-count" id="bet-🍎">0</div></button>
-            <button class="bet-btn" onclick="placeBet('🍬')">🍬<div class="bet-count" id="bet-🍬">0</div></button>
-        </div>
-
-        <div class="controls">
-            <button class="coin-btn" onclick="addCredit()">
-                <div class="coin-slot-line"></div>
-                <b style="color:#333; font-size: 14px;">點我投幣</b>
-            </button>
-            <button class="run-btn" id="runBtn" onclick="startSpin()">RUN</button>
-        </div>
+<div class="container">
+    <h1>🎮 人生數字探索</h1>
+    <div class="subtitle">
+        不是為了預測未來<br>
+        而是為了更認識你自己
     </div>
 
-    <div id="modal-overlay" onclick="closeModal()">
-        <div id="modal-content" onclick="event.stopPropagation()">
-            <h1 style="color: var(--gold); margin-top: 0;">🎊 新年快樂 🎊</h1>
-            <div id="blessing-text" style="font-size: 20px; line-height: 1.6; min-height: 100px;"></div>
-            <button class="close-btn" onclick="closeModal()">收下祝福 🤝</button>
+    <label for="birthday">請輸入你的西元出生年月日</label>
+    <input type="date" id="birthday">
+
+    <button onclick="calculate()">探索我的人生數字</button>
+
+    <div class="result" id="result">
+        <div class="number" id="lifeNumber"></div>
+        <div class="highlight" id="highlight"></div>
+
+        <div class="section">
+            <div class="section-title">🌟 優勢模式</div>
+            <div id="strength"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🚦 成長關卡</div>
+            <div id="challenge"></div>
         </div>
     </div>
+</div>
 
-    <script>
-        let credits = 0;
-        let win = 0;
-        let bets = { '🧧': 0, '💰': 0, '🧨': 0, '🏮': 0, '🍎': 0, '🍬': 0 };
-        let isSpinning = false;
-        
-        const items = [
-            { id: 'c0', icon: '🧧', odds: 20 }, { id: 'c1', icon: '💰', odds: 15 },
-            { id: 'c2', icon: '🧨', odds: 10 }, { id: 'c3', icon: '🏮', odds: 5 },
-            { id: 'c4', icon: '🍎', odds: 2 },  { id: 'c5', icon: '🍬', odds: 2 },
-            { id: 'c6', icon: '🍊', odds: 2 },  { id: 'c7', icon: '🌟', odds: 50 }
-        ];
+<script>
+    function calculateLifeNumber(dateStr) {
+        let total = 0;
+        for (let ch of dateStr) {
+            if (!isNaN(ch)) total += Number(ch);
+        }
+        while (total >= 10) {
+            total = total.toString().split('').reduce((a, b) => a + Number(b), 0);
+        }
+        return total;
+    }
 
-        const blessings = [
-            "2026 新年快樂！🎆 祝您財源廣進，福氣滿滿！💰✨ 讓重義哥陪您守護一整年的平安。🤝🧧",
-            "迎著新年的第一道曙光，🌅 衷心祝願您：身體健康、閤家平安。🏡💖 願您在人生的每個面向，都擁有超乎預期的美好。🌟🌈",
-            "重情重義，始終如一！🤝 我會用專業與誠信，守護您與家人的保障。🛡️💼 祝您新的一年萬事亨通！🧨🍎",
-            "心中有感激，前行有力量！🙏✨ 謝謝您過去一年的信任，新的一年祝您：心想事成，好運連連！🧧🎊",
-            "新年大吉！🍊 願您的生活充滿溫暖與感動，專業的守護交給重義哥，幸福的生活留給您自己。🛡️✨💖"
-        ];
+    const data = {
+        1: {
+            highlight: "你不是愛掌控，你只是習慣先站出來。",
+            strength: "行動快、有決斷力，適合開創與帶頭。",
+            challenge: "不必每一場都你先衝，等一下也很有力量。"
+        },
+        2: {
+            highlight: "你不是想太多，你只是太在乎關係。",
+            strength: "擅長傾聽、協調，是團隊的潤滑劑。",
+            challenge: "別忘了，你的感受也很重要。"
+        },
+        3: {
+            highlight: "你不是不專心，是靈感同時來太多。",
+            strength: "創意與表達力強，很會說故事。",
+            challenge: "把一件事說完，你的光會更亮。"
+        },
+        4: {
+            highlight: "你不是固執，你只是需要安全感。",
+            strength: "穩定、耐力強，能把混亂變秩序。",
+            challenge: "偶爾不照表走，世界不會塌。"
+        },
+        5: {
+            highlight: "你不是不安定，你是天生適應力強。",
+            strength: "彈性高、學習快，適合轉型與變化。",
+            challenge: "自由不是亂跑，而是知道為何而走。"
+        },
+        6: {
+            highlight: "你不是愛操心，你是在守護重要的人。",
+            strength: "責任感強，是家庭與團隊的後盾。",
+            challenge: "你也值得被好好照顧。"
+        },
+        7: {
+            highlight: "你不是冷淡，你只是思考得比較深。",
+            strength: "洞察力強，能看見事情本質。",
+            challenge: "有些答案，說出口才完整。"
+        },
+        8: {
+            highlight: "你不是現實，你是有責任感。",
+            strength: "執行力與影響力強，能把想法落地。",
+            challenge: "學會分工，你會走得更遠。"
+        },
+        9: {
+            highlight: "你不是情緒化，你是感受力太強。",
+            strength: "同理心強，能接住很多人的故事。",
+            challenge: "放下不是冷漠，而是讓愛更長久。"
+        }
+    };
 
-        function updateDisplay() {
-            document.getElementById('credits').innerText = credits;
-            document.getElementById('win').innerText = win;
-            for (let icon in bets) {
-                document.getElementById(`bet-${icon}`).innerText = bets[icon];
-            }
+    function calculate() {
+        const birthday = document.getElementById("birthday").value;
+        if (!birthday) {
+            alert("請先輸入出生年月日喔 🙂");
+            return;
         }
 
-        function addCredit() {
-            if (isSpinning) return;
-            credits += 10;
-            updateDisplay();
-        }
+        const number = calculateLifeNumber(birthday);
+        const info = data[number];
 
-        function placeBet(icon) {
-            if (isSpinning) return;
-            if (credits > 0) {
-                credits--;
-                bets[icon]++;
-                updateDisplay();
-            } else {
-                alert("請先點擊『投幣口』增加餘額喔！💰");
-            }
-        }
+        document.getElementById("lifeNumber").innerText = number;
+        document.getElementById("highlight").innerText = info.highlight;
+        document.getElementById("strength").innerText = info.strength;
+        document.getElementById("challenge").innerText = info.challenge;
 
-        function startSpin() {
-            if (isSpinning) return;
-            if (Object.values(bets).every(v => v === 0)) {
-                alert("請先點擊上方圖樣進行下注！🎰");
-                return;
-            }
+        document.getElementById("result").style.display = "block";
+    }
+</script>
 
-            isSpinning = true;
-            win = 0;
-            updateDisplay();
-            
-            let totalSteps = 0;
-            const stopAt = 24 + Math.floor(Math.random() * 8); 
-            let speed = 60;
-
-            const spin = setInterval(() => {
-                document.querySelectorAll('.cell').forEach(c => c.classList.remove('active'));
-                let cellId = items[totalSteps % 8].id;
-                document.getElementById(cellId).classList.add('active');
-                totalSteps++;
-
-                if (totalSteps > stopAt) {
-                    clearInterval(spin);
-                    setTimeout(() => finishGame(totalSteps % 8), 300);
-                }
-            }, speed);
-        }
-
-        function finishGame(finalIndex) {
-            const resultIndex = finalIndex === 0 ? 7 : finalIndex - 1;
-            const result = items[resultIndex];
-            const betAmount = bets[result.icon] || 0;
-            
-            let message = "";
-            if (betAmount > 0) {
-                const prize = betAmount * result.odds;
-                win = prize;
-                credits += prize;
-                message = `恭喜中獎！🎉 獲得 ${prize} 點！<br><br>${blessings[Math.floor(Math.random() * blessings.length)]}`;
-            } else {
-                message = `開出了 ${result.icon}！雖然沒中獎，但重義哥的祝福不打折：<br><br>${blessings[Math.floor(Math.random() * blessings.length)]}`;
-            }
-            
-            showModal(message);
-            for (let icon in bets) bets[icon] = 0;
-            isSpinning = false;
-            updateDisplay();
-        }
-
-        function showModal(text) {
-            document.getElementById('blessing-text').innerHTML = text;
-            document.getElementById('modal-overlay').classList.add('show');
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.remove('show');
-        }
-    </script>
 </body>
 </html>
