@@ -172,7 +172,7 @@ function showResult(){
 
   app.innerHTML=`
   <div class="card" style="background:${color}">
-    <h3 class="fade">你的生命靈數是 ${n}</h3>
+    <h3 class="fade">你的專屬天賦數字是 ${n}</h3>
     <ul class="fade">${numerology[n].traits.map(t=>`<li>${t}</li>`).join("")}</ul>
     <p class="fade">${dynamicMessage(state,n)}</p>
   </div>
