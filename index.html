@@ -1,134 +1,170 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<title>人生轉彎處 · 靈數互動體驗</title>
+<meta charset="UTF-8">
+<title>人生轉彎處｜靈數互動旅程</title>
+
 <style>
 body {
+  margin: 0;
   font-family: "Helvetica Neue", sans-serif;
-  background: linear-gradient(#fdfcfb, #e2ebf0);
-  color: #333;
+  transition: background 0.8s;
+}
+#wrapper {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 #app {
+  width: 380px;
   background: white;
-  width: 360px;
-  padding: 24px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border-radius: 24px;
+  padding: 26px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
+h3 { margin-top: 0; }
 button {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
-  background: #f0f0f0;
   font-size: 16px;
+  cursor: pointer;
 }
-button:hover {
-  background: #dfefff;
-}
-.choice {
-  font-size: 28px;
+.option {
+  font-size: 26px;
 }
 .small {
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
+  margin-top: 10px;
+}
+.card {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 18px;
 }
 </style>
 </head>
-<body>
 
-<div id="app"></div>
+<body>
+<div id="wrapper">
+  <div id="app"></div>
+</div>
 
 <script>
+const app = document.getElementById("app");
+const body = document.body;
+
 let state = {
   mode: "",
   mood: "",
-  action: "",
-  value: "",
+  coping: "",
+  direction: "",
+  symbol: "",
   number: 0
 };
-
-const app = document.getElementById("app");
 
 function render(html) {
   app.innerHTML = html;
 }
 
-/* Step 1 */
+/* Step 1：人生轉彎 */
 render(`
-<h3>如果人生正站在一個轉彎處</h3>
-<p>你現在比較靠近哪一塊？</p>
+<h3>如果人生正走到一個轉彎處</h3>
+<p>你現在最靠近哪個領域？</p>
 <button onclick="step1('工作')">🧳 工作 / 事業</button>
 <button onclick="step1('家庭')">🏠 家庭 / 關係</button>
-<button onclick="step1('決策')">🧭 重要決策</button>
+<button onclick="step1('決策')">🧭 重大決策</button>
+<button onclick="step1('自我')">🌿 自我狀態</button>
 `);
 
 function step1(v){
   state.mode = v;
   render(`
-  <h3>此刻的你，比較像哪一種畫面？</h3>
-  <button class="choice" onclick="step2('光')">🌅</button>
-  <button class="choice" onclick="step2('霧')">🌫️</button>
-  <p class="small">沒有對錯，只是狀態</p>
+  <h3>此刻的內在風景比較像？</h3>
+  <button class="option" onclick="step2('霧')">🌫️</button>
+  <button class="option" onclick="step2('光')">🌅</button>
+  <button class="option" onclick="step2('夜')">🌌</button>
+  <button class="option" onclick="step2('風')">🌬️</button>
+  <p class="small">直覺選，不用想太久</p>
   `);
 }
 
 function step2(v){
   state.mood = v;
+
+  if(v === "霧"){
+    body.style.background = "linear-gradient(#cfd9df,#5c6b73)";
+  } else {
+    body.style.background = "linear-gradient(#fff1c1,#ffd89b)";
+  }
+
   render(`
-  <h3>如果現在不用立刻解決</h3>
-  <p>你比較想？</p>
-  <button onclick="step3('靜一下')">🪑 靜一下</button>
-  <button onclick="step3('聊聊')">💬 找人聊聊</button>
-  <button onclick="step3('撐著')">💪 撐過去</button>
+  <h3>面對這樣的狀態</h3>
+  <p>你通常會怎麼做？</p>
+  <button onclick="step3('撐著')">💪 撐著不說</button>
+  <button onclick="step3('沉澱')">🪑 靜下來</button>
+  <button onclick="step3('求助')">💬 找人聊</button>
+  <button onclick="step3('轉移')">🎧 轉移注意</button>
   `);
 }
 
 function step3(v){
-  state.action = v;
+  state.coping = v;
   render(`
-  <h3>哪一種方向更靠近你？</h3>
-  <button class="choice" onclick="step4('穩定')">🔥 穩定</button>
-  <button class="choice" onclick="step4('成長')">🌱 成長</button>
+  <h3>如果方向可以重新選</h3>
+  <p>你更嚮往哪一種？</p>
+  <button onclick="step4('穩定')">🔥 穩定與安全</button>
+  <button onclick="step4('突破')">🚀 突破與挑戰</button>
+  <button onclick="step4('平衡')">⚖️ 平衡與調和</button>
+  <button onclick="step4('放下')">🍃 放下與簡化</button>
   `);
 }
 
 function step4(v){
-  state.value = v;
+  state.direction = v;
   render(`
   <h3>最後，告訴我你的出生年月日</h3>
-  <input id="dob" type="date" style="width:100%;padding:10px;border-radius:10px;">
-  <button onclick="final()">繼續</button>
+  <input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
+  <button onclick="final()">繼續旅程</button>
   `);
 }
 
 function final(){
   const dob = document.getElementById("dob").value;
   if(!dob) return alert("請輸入日期");
-  const digits = dob.replaceAll("-","").split("").map(Number);
-  let sum = digits.reduce((a,b)=>a+b,0);
+
+  let sum = dob.replaceAll("-","").split("").reduce((a,b)=>a+Number(b),0);
   while(sum > 9) sum = sum.toString().split("").reduce((a,b)=>a+Number(b),0);
   state.number = sum;
 
+  const messages = {
+    工作: {
+      1: "你需要重新拿回主導權，而不是一直被進度追著跑。",
+      2: "合作正在考驗你，但你其實比想像中更重要。",
+      3: "你的創意被壓抑太久，是時候讓它透氣了。",
+      4: "穩固基礎比衝刺更重要。",
+      5: "改變正在逼近，不用急著拒絕。",
+      6: "責任感讓你很累，但也讓人依賴你。",
+      7: "你需要一段安靜，釐清真正想走的路。",
+      8: "你有實力，只是低估了自己。",
+      9: "現在的結束，會換來更大的格局。"
+    }
+  };
+
   render(`
-  <h3>你的人生節奏是 ${sum}</h3>
-  <p>
-  在「${state.mode}」的轉彎處，  
-  當你感覺在${state.mood==="霧"?"霧裡":"光中"}，  
-  又選擇了「${state.action}」，  
-  其實代表你內在非常需要  
-  <strong>${state.value==="穩定"?"被接住":"被理解後前進"}</strong>。
-  </p>
-  <p class="small">這不是定義，是提醒。</p>
+  <h3>你的靈數是 ${state.number}</h3>
+  <div class="card">
+  ${messages[state.mode]?.[state.number] || "你正站在一個重新定義自己的門口。"}
+  </div>
+  <p class="small">這不是答案，而是一張提醒卡。</p>
   `);
 }
 </script>
-
 </body>
 </html>
