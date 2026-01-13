@@ -1,150 +1,132 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<title>人生轉彎處｜一段陪你想一想的旅程</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<title>人生轉彎處 · 靈數互動體驗</title>
 <style>
-body{
-    font-family:"Noto Sans TC",Arial,sans-serif;
-    background:linear-gradient(180deg,#fdfcfb,#e6f0f5);
-    margin:0;padding:0;color:#333;
+body {
+  font-family: "Helvetica Neue", sans-serif;
+  background: linear-gradient(#fdfcfb, #e2ebf0);
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-.container{
-    max-width:600px;margin:30px auto;
-    background:#fff;border-radius:24px;
-    padding:32px;
-    box-shadow:0 20px 50px rgba(0,0,0,.08);
+#app {
+  background: white;
+  width: 360px;
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
-h1{text-align:center;margin-bottom:6px;}
-.subtitle{text-align:center;color:#777;font-size:14px;margin-bottom:28px;}
-.step{display:none;}
-.step.active{display:block;}
-button{
-    width:100%;padding:14px;margin-top:16px;
-    border-radius:14px;border:none;
-    background:#7aa2ff;color:#fff;
-    font-size:16px;cursor:pointer;
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 12px;
+  border: none;
+  background: #f0f0f0;
+  font-size: 16px;
 }
-button:hover{background:#688fe6;}
-.option{
-    background:#f6f8fb;padding:14px;
-    border-radius:16px;margin:10px 0;
-    cursor:pointer;
+button:hover {
+  background: #dfefff;
 }
-.option:hover{background:#e9eefc;}
-.card{
-    background:#f7f9fc;border-radius:18px;
-    padding:18px;margin-top:18px;
+.choice {
+  font-size: 28px;
 }
-.number{
-    font-size:56px;text-align:center;
-    color:#7aa2ff;font-weight:bold;
+.small {
+  font-size: 14px;
+  color: #666;
 }
-.fade{opacity:0;transition:opacity 1s;}
-.fade.show{opacity:1;}
 </style>
 </head>
-
 <body>
-<div class="container">
 
-<h1>🌱 人生轉彎處</h1>
-<div class="subtitle">
-有些時候，不需要答案<br>
-只需要被好好理解
-</div>
-
-<!-- STEP 1 -->
-<div class="step active" id="step1">
-    <p><b>你現在，正在哪一個轉彎處？</b></p>
-    <div class="option" onclick="choose('工作')">💼 工作與方向</div>
-    <div class="option" onclick="choose('家庭')">🏠 家庭與關係</div>
-    <div class="option" onclick="choose('決策')">🧭 卡住的重要決定</div>
-</div>
-
-<!-- STEP 2 -->
-<div class="step" id="step2">
-    <p><b>謝謝你願意說。</b><br>接下來，請輸入你的出生年月日。</p>
-    <input type="date" id="birthday">
-    <button onclick="next()">繼續這段探索</button>
-</div>
-
-<!-- STEP 3 -->
-<div class="step" id="step3">
-    <div class="number fade" id="num"></div>
-
-    <div class="card fade" id="c1"></div>
-    <div class="card fade" id="c2"></div>
-    <div class="card fade" id="c3"></div>
-</div>
-
-</div>
+<div id="app"></div>
 
 <script>
-let mode = "";
-
-function choose(m){
-    mode = m;
-    document.getElementById("step1").classList.remove("active");
-    document.getElementById("step2").classList.add("active");
-}
-
-function lifeNumber(d){
-    let t=0;
-    for(let c of d){ if(!isNaN(c)) t+=Number(c);}
-    while(t>=10){ t=t.toString().split('').reduce((a,b)=>a+Number(b),0);}
-    return t;
-}
-
-const text = {
-1:"你會在沒人敢動時站出來。",
-2:"你會先感覺到氣氛的變化。",
-3:"你會想用不同方式表達自己。",
-4:"你會想把事情弄穩。",
-5:"你會開始想改變現狀。",
-6:"你會不自覺扛起責任。",
-7:"你會反覆思考每一個可能。",
-8:"你會思考實際可行的路。",
-9:"你會在意所有人的感受。"
+let state = {
+  mode: "",
+  mood: "",
+  action: "",
+  value: "",
+  number: 0
 };
 
-const remind = {
-工作:"這個階段，你不需要馬上證明什麼。",
-家庭:"你已經做得比你想像中多了。",
-決策:"允許自己暫時沒有答案。"
-};
+const app = document.getElementById("app");
 
-function next(){
-    const b=document.getElementById("birthday").value;
-    if(!b){alert("請輸入出生年月日 🙂");return;}
-    const n=lifeNumber(b);
+function render(html) {
+  app.innerHTML = html;
+}
 
-    document.getElementById("step2").classList.remove("active");
-    document.getElementById("step3").classList.add("active");
+/* Step 1 */
+render(`
+<h3>如果人生正站在一個轉彎處</h3>
+<p>你現在比較靠近哪一塊？</p>
+<button onclick="step1('工作')">🧳 工作 / 事業</button>
+<button onclick="step1('家庭')">🏠 家庭 / 關係</button>
+<button onclick="step1('決策')">🧭 重要決策</button>
+`);
 
-    setTimeout(()=>{ 
-        document.getElementById("num").innerText=n;
-        document.getElementById("num").classList.add("show");
-    },300);
+function step1(v){
+  state.mode = v;
+  render(`
+  <h3>此刻的你，比較像哪一種畫面？</h3>
+  <button class="choice" onclick="step2('光')">🌅</button>
+  <button class="choice" onclick="step2('霧')">🌫️</button>
+  <p class="small">沒有對錯，只是狀態</p>
+  `);
+}
 
-    setTimeout(()=>{ 
-        document.getElementById("c1").innerText=
-        "此刻的你，在「"+mode+"」上，"+text[n];
-        document.getElementById("c1").classList.add("show");
-    },900);
+function step2(v){
+  state.mood = v;
+  render(`
+  <h3>如果現在不用立刻解決</h3>
+  <p>你比較想？</p>
+  <button onclick="step3('靜一下')">🪑 靜一下</button>
+  <button onclick="step3('聊聊')">💬 找人聊聊</button>
+  <button onclick="step3('撐著')">💪 撐過去</button>
+  `);
+}
 
-    setTimeout(()=>{ 
-        document.getElementById("c2").innerText=
-        "這不是缺點，而是一種你一貫的生命節奏。";
-        document.getElementById("c2").classList.add("show");
-    },1500);
+function step3(v){
+  state.action = v;
+  render(`
+  <h3>哪一種方向更靠近你？</h3>
+  <button class="choice" onclick="step4('穩定')">🔥 穩定</button>
+  <button class="choice" onclick="step4('成長')">🌱 成長</button>
+  `);
+}
 
-    setTimeout(()=>{ 
-        document.getElementById("c3").innerText=
-        "給你的一句話：\n"+remind[mode];
-        document.getElementById("c3").classList.add("show");
-    },2100);
+function step4(v){
+  state.value = v;
+  render(`
+  <h3>最後，告訴我你的出生年月日</h3>
+  <input id="dob" type="date" style="width:100%;padding:10px;border-radius:10px;">
+  <button onclick="final()">繼續</button>
+  `);
+}
+
+function final(){
+  const dob = document.getElementById("dob").value;
+  if(!dob) return alert("請輸入日期");
+  const digits = dob.replaceAll("-","").split("").map(Number);
+  let sum = digits.reduce((a,b)=>a+b,0);
+  while(sum > 9) sum = sum.toString().split("").reduce((a,b)=>a+Number(b),0);
+  state.number = sum;
+
+  render(`
+  <h3>你的人生節奏是 ${sum}</h3>
+  <p>
+  在「${state.mode}」的轉彎處，  
+  當你感覺在${state.mood==="霧"?"霧裡":"光中"}，  
+  又選擇了「${state.action}」，  
+  其實代表你內在非常需要  
+  <strong>${state.value==="穩定"?"被接住":"被理解後前進"}</strong>。
+  </p>
+  <p class="small">這不是定義，是提醒。</p>
+  `);
 }
 </script>
 
