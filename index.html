@@ -114,7 +114,7 @@ const numerology={
 function dynamicMessage(s,n){
   const m1={工作:"在工作與責任之中，",家庭:"在家庭與關係裡，",決策:"面對重要選擇時，",自我:"回到你自己身上，"};
   const m2={霧:"你其實已經感覺到迷惘，",光:"你已經看見一條可能的路，",夜:"你正在低調累積力量，",風:"你渴望改變現狀，"};
-  const m3={撐著:"但你選擇先撐住不說，",沉澱:"你讓自己慢慢沉澱，",求助:"你願意尋求連結，",轉移:"你暫時不想正面面對，"};
+  const m3={撐著不說:"但你選擇先撐住不說，",靜下沉澱:"你讓自己慢慢沉澱，",找人聊聊:"你願意尋求連結，",轉移注意:"你暫時不想正面面對，"};
   const m4={穩定:"因為你需要安全感。",突破:"因為你不想再原地打轉。",平衡:"因為你想找回內在秩序。",放下:"因為你真的背太多了。"};
   return m1[s.mode]+m2[s.mood]+m3[s.coping]+m4[s.desire]+" "+numerology[n].tone;
 }
@@ -145,10 +145,10 @@ function step1(v){state.mode=v;app.innerHTML=`
 
 function step2(v){state.mood=v;app.innerHTML=`
 <h3>面對這樣的狀態</h3>
-<button onclick="step3('撐著不說')">💪 撐著不說</button>
-<button onclick="step3('靜下沉澱')">🪑 靜下沉澱</button>
-<button onclick="step3('找人聊聊')">💬 找人聊聊</button>
-<button onclick="step3('轉移注意')">🎧 轉移注意</button>`;}
+<button onclick="step3('撐著不說')">💪😑 撐著不說</button>
+<button onclick="step3('靜下沉澱')">🧘‍♀️🧘🏼‍ 靜下沉澱</button>
+<button onclick="step3('找人聊聊')">💬👥 找人聊聊</button>
+<button onclick="step3('轉移注意')">🎧🤹‍ 轉移注意</button>`;}
 
 function step3(v){state.coping=v;app.innerHTML=`
 <h3>你更渴望哪一種？</h3>
@@ -158,9 +158,9 @@ function step3(v){state.coping=v;app.innerHTML=`
 <button onclick="step4('放下')">🍃 放下</button>`;}
 
 function step4(v){state.desire=v;app.innerHTML=`
-<h3>請輸入你的出生年月日</h3>
+<h3>請輸入你的西元出生年月日</h3>
 <input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
-<button onclick="showResult()">產生我的圖卡</button>`;}
+<button onclick="showResult()">🔮想看看如何前進🧭</button>`;}
 
 function showResult(){
   const dob=document.getElementById("dob").value;
@@ -187,6 +187,9 @@ function showResult(){
     <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
       <img src="BetterQRCode.jpg" class="qr">
     </a>
+<br>
+    如果有被小小Touch到，歡迎分享給你最好的朋友💌<br>
+
   </div>
   `;
 }
