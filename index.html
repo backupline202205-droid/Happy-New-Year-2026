@@ -2,52 +2,55 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>人生轉彎處｜靈數互動旅程</title>
+<title>人生轉彎處｜生命靈數互動體驗</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: "Helvetica Neue", sans-serif;
-  transition: background 0.8s;
+body{
+  margin:0;
+  font-family:"Helvetica Neue", sans-serif;
+  background:#f5f6f8;
+  transition:background 0.8s;
 }
-#wrapper {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+#wrapper{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
-#app {
-  width: 380px;
-  background: white;
-  border-radius: 24px;
-  padding: 26px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+#app{
+  width:390px;
+  background:#fff;
+  border-radius:26px;
+  padding:26px;
+  box-shadow:0 20px 50px rgba(0,0,0,.18);
 }
-h3 { margin-top: 0; }
-button {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 14px;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
+h3{margin-top:0;}
+button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:14px;
+  border:none;
+  font-size:16px;
+  cursor:pointer;
+  background:#f0f0f0;
 }
-.option {
-  font-size: 26px;
+button:hover{background:#e3edff;}
+.option{font-size:26px;}
+.small{font-size:13px;color:#666;}
+.card{
+  border-radius:22px;
+  padding:22px;
+  color:#fff;
+  box-shadow:0 15px 40px rgba(0,0,0,.25);
+  animation:fadeIn 1s ease;
 }
-.small {
-  font-size: 13px;
-  color: #666;
-  margin-top: 10px;
+.fade{animation:fadeIn 1.4s ease;}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
 }
-.card {
-  border: 2px dashed #ccc;
-  padding: 20px;
-  border-radius: 16px;
-  text-align: center;
-  font-size: 18px;
-}
+ul{padding-left:18px;}
 </style>
 </head>
 
@@ -57,113 +60,152 @@ button {
 </div>
 
 <script>
-const app = document.getElementById("app");
-const body = document.body;
+const app=document.getElementById("app");
+const body=document.body;
 
-let state = {
-  mode: "",
-  mood: "",
-  coping: "",
-  direction: "",
-  symbol: "",
-  number: 0
+/* ========= 狀態 ========= */
+let state={
+  mode:"",
+  mood:"",
+  coping:"",
+  desire:"",
+  number:0
 };
 
-function render(html) {
-  app.innerHTML = html;
+/* ========= 生命靈數資料 ========= */
+const numerology={
+1:{traits:["主動","領導","行動力","獨立","開創"],tone:"請相信你不是衝動，而是走在前面。"},
+2:{traits:["敏感","協調","傾聽","支持","連結"],tone:"你的溫柔，是世界需要的力量。"},
+3:{traits:["表達","創意","幽默","感染力","樂觀"],tone:"被看見的，是你真實的樣子。"},
+4:{traits:["穩定","踏實","結構","耐心","責任"],tone:"慢一點，你反而走得最遠。"},
+5:{traits:["自由","變化","彈性","體驗","行動"],tone:"改變不是逃離，而是成長。"},
+6:{traits:["照顧","承擔","關係","責任","愛"],tone:"請記得，你也值得被照顧。"},
+7:{traits:["思考","洞察","內省","真實","深度"],tone:"安靜，是你整理世界的方式。"},
+8:{traits:["力量","實踐","影響","資源","成就"],tone:"你有能力承載更大的局。"},
+9:{traits:["包容","完成","同理","放下","智慧"],tone:"結束，是為了新的開始。"}
+};
+
+/* ========= 動態語意模組 ========= */
+function dynamicMessage(s,n){
+  const m1={
+    工作:"在工作與責任之中，",
+    家庭:"在家庭與關係裡，",
+    決策:"面對重要選擇時，",
+    自我:"回到你自己身上，"
+  };
+  const m2={
+    霧:"你其實已經感覺到迷惘，",
+    光:"你已經看見一條可能的路，",
+    夜:"你正在低調累積力量，",
+    風:"你渴望改變現狀，"
+  };
+  const m3={
+    撐著:"但你選擇先撐住不說，",
+    沉澱:"你讓自己慢慢沉澱，",
+    求助:"你願意尋求連結，",
+    轉移:"你暫時不想正面面對，"
+  };
+  const m4={
+    穩定:"因為你需要安全感。",
+    突破:"因為你不想再原地打轉。",
+    平衡:"因為你想找回內在秩序。",
+    放下:"因為你真的背太多了。"
+  };
+  return m1[s.mode]+m2[s.mood]+m3[s.coping]+m4[s.desire]+" "+numerology[n].tone;
 }
 
-/* Step 1：人生轉彎 */
-render(`
-<h3>如果人生正走到一個轉彎處</h3>
-<p>你現在最靠近哪個領域？</p>
+/* ========= 計算生命靈數 ========= */
+function lifeNumber(dob){
+  let sum=dob.replaceAll("-","").split("").reduce((a,b)=>a+Number(b),0);
+  while(sum>9) sum=sum.toString().split("").reduce((a,b)=>a+Number(b),0);
+  return sum;
+}
+
+/* ========= Step 1 ========= */
+app.innerHTML=`
+<h3>如果人生走到一個轉彎處</h3>
+<p>你現在最靠近哪個面向？</p>
 <button onclick="step1('工作')">🧳 工作 / 事業</button>
 <button onclick="step1('家庭')">🏠 家庭 / 關係</button>
 <button onclick="step1('決策')">🧭 重大決策</button>
-<button onclick="step1('自我')">🌿 自我狀態</button>
-`);
+<button onclick="step1('自我')">🌱 自我狀態</button>
+`;
 
 function step1(v){
-  state.mode = v;
-  render(`
-  <h3>此刻的內在風景比較像？</h3>
+  state.mode=v;
+  app.innerHTML=`
+  <h3>此刻的內在風景像哪一幅？</h3>
   <button class="option" onclick="step2('霧')">🌫️</button>
   <button class="option" onclick="step2('光')">🌅</button>
   <button class="option" onclick="step2('夜')">🌌</button>
   <button class="option" onclick="step2('風')">🌬️</button>
-  <p class="small">直覺選，不用想太久</p>
-  `);
+  <p class="small">直覺選擇即可</p>
+  `;
 }
 
+/* ========= Step 2 ========= */
 function step2(v){
-  state.mood = v;
+  state.mood=v;
+  body.style.background=(v==="霧"||v==="夜")
+    ?"linear-gradient(#cfd9df,#52616b)"
+    :"linear-gradient(#fff1c1,#ffd89b)";
 
-  if(v === "霧"){
-    body.style.background = "linear-gradient(#cfd9df,#5c6b73)";
-  } else {
-    body.style.background = "linear-gradient(#fff1c1,#ffd89b)";
-  }
-
-  render(`
+  app.innerHTML=`
   <h3>面對這樣的狀態</h3>
   <p>你通常會怎麼做？</p>
   <button onclick="step3('撐著')">💪 撐著不說</button>
   <button onclick="step3('沉澱')">🪑 靜下來</button>
-  <button onclick="step3('求助')">💬 找人聊</button>
+  <button onclick="step3('求助')">💬 找人聊聊</button>
   <button onclick="step3('轉移')">🎧 轉移注意</button>
-  `);
+  `;
 }
 
+/* ========= Step 3 ========= */
 function step3(v){
-  state.coping = v;
-  render(`
-  <h3>如果方向可以重新選</h3>
-  <p>你更嚮往哪一種？</p>
-  <button onclick="step4('穩定')">🔥 穩定與安全</button>
-  <button onclick="step4('突破')">🚀 突破與挑戰</button>
-  <button onclick="step4('平衡')">⚖️ 平衡與調和</button>
-  <button onclick="step4('放下')">🍃 放下與簡化</button>
-  `);
+  state.coping=v;
+  app.innerHTML=`
+  <h3>如果可以重新選擇方向</h3>
+  <p>你更渴望哪一種？</p>
+  <button onclick="step4('穩定')">🔥 穩定</button>
+  <button onclick="step4('突破')">🚀 突破</button>
+  <button onclick="step4('平衡')">⚖️ 平衡</button>
+  <button onclick="step4('放下')">🍃 放下</button>
+  `;
 }
 
+/* ========= Step 4 ========= */
 function step4(v){
-  state.direction = v;
-  render(`
-  <h3>最後，告訴我你的出生年月日</h3>
+  state.desire=v;
+  app.innerHTML=`
+  <h3>最後，請輸入你的出生年月日</h3>
   <input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
-  <button onclick="final()">繼續旅程</button>
-  `);
+  <button onclick="showResult()">揭曉我的圖卡</button>
+  `;
 }
 
-function final(){
-  const dob = document.getElementById("dob").value;
-  if(!dob) return alert("請輸入日期");
+/* ========= 結果 ========= */
+function showResult(){
+  const dob=document.getElementById("dob").value;
+  if(!dob){alert("請輸入日期");return;}
+  state.number=lifeNumber(dob);
 
-  let sum = dob.replaceAll("-","").split("").reduce((a,b)=>a+Number(b),0);
-  while(sum > 9) sum = sum.toString().split("").reduce((a,b)=>a+Number(b),0);
-  state.number = sum;
+  const n=state.number;
+  const color=(state.mood==="霧"||state.mood==="夜")
+    ?"linear-gradient(#4b6cb7,#182848)"
+    :"linear-gradient(#f7971e,#ffd200)";
 
-  const messages = {
-    工作: {
-      1: "你需要重新拿回主導權，而不是一直被進度追著跑。",
-      2: "合作正在考驗你，但你其實比想像中更重要。",
-      3: "你的創意被壓抑太久，是時候讓它透氣了。",
-      4: "穩固基礎比衝刺更重要。",
-      5: "改變正在逼近，不用急著拒絕。",
-      6: "責任感讓你很累，但也讓人依賴你。",
-      7: "你需要一段安靜，釐清真正想走的路。",
-      8: "你有實力，只是低估了自己。",
-      9: "現在的結束，會換來更大的格局。"
-    }
-  };
+  body.style.background=color;
 
-  render(`
-  <h3>你的靈數是 ${state.number}</h3>
-  <div class="card">
-  ${messages[state.mode]?.[state.number] || "你正站在一個重新定義自己的門口。"}
+  app.innerHTML=`
+  <div class="card" style="background:${color}">
+    <h3 class="fade">你的生命靈數是 ${n}</h3>
+    <p class="fade small">你的核心特質：</p>
+    <ul class="fade">
+      ${numerology[n].traits.map(t=>`<li>${t}</li>`).join("")}
+    </ul>
+    <p class="fade">${dynamicMessage(state,n)}</p>
   </div>
-  <p class="small">這不是答案，而是一張提醒卡。</p>
-  `);
+  `;
 }
 </script>
 </body>
