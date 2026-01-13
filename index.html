@@ -2,191 +2,151 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>人生數字探索｜一段溫柔的理解</title>
+<title>人生轉彎處｜一段陪你想一想的旅程</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-    font-family: "Noto Sans TC", Arial, sans-serif;
-    background: linear-gradient(180deg, #fdfcfb, #e2ebf0);
-    margin: 0;
-    padding: 0;
-    color: #333;
+body{
+    font-family:"Noto Sans TC",Arial,sans-serif;
+    background:linear-gradient(180deg,#fdfcfb,#e6f0f5);
+    margin:0;padding:0;color:#333;
 }
-.container {
-    max-width: 560px;
-    margin: 30px auto;
-    background: #fff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+.container{
+    max-width:600px;margin:30px auto;
+    background:#fff;border-radius:24px;
+    padding:32px;
+    box-shadow:0 20px 50px rgba(0,0,0,.08);
 }
-h1 {
-    text-align: center;
-    margin-bottom: 8px;
+h1{text-align:center;margin-bottom:6px;}
+.subtitle{text-align:center;color:#777;font-size:14px;margin-bottom:28px;}
+.step{display:none;}
+.step.active{display:block;}
+button{
+    width:100%;padding:14px;margin-top:16px;
+    border-radius:14px;border:none;
+    background:#7aa2ff;color:#fff;
+    font-size:16px;cursor:pointer;
 }
-.subtitle {
-    text-align: center;
-    font-size: 14px;
-    color: #777;
-    margin-bottom: 28px;
+button:hover{background:#688fe6;}
+.option{
+    background:#f6f8fb;padding:14px;
+    border-radius:16px;margin:10px 0;
+    cursor:pointer;
 }
-input, button {
-    width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
+.option:hover{background:#e9eefc;}
+.card{
+    background:#f7f9fc;border-radius:18px;
+    padding:18px;margin-top:18px;
 }
-button {
-    margin-top: 18px;
-    background: #7aa2ff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+.number{
+    font-size:56px;text-align:center;
+    color:#7aa2ff;font-weight:bold;
 }
-button:hover {
-    background: #688fe6;
-}
-.loading {
-    text-align: center;
-    margin-top: 30px;
-    display: none;
-    color: #666;
-}
-.result {
-    display: none;
-    margin-top: 30px;
-}
-.number {
-    font-size: 52px;
-    text-align: center;
-    color: #7aa2ff;
-    font-weight: bold;
-}
-.card {
-    background: #f7f9fc;
-    border-radius: 16px;
-    padding: 18px;
-    margin-top: 16px;
-}
-.card-title {
-    font-weight: bold;
-    margin-bottom: 6px;
-}
-.quote {
-    margin-top: 20px;
-    background: #fff6e5;
-    border-radius: 16px;
-    padding: 18px;
-    font-style: italic;
-    text-align: center;
-}
-.footer {
-    text-align: center;
-    margin-top: 30px;
-    font-size: 13px;
-    color: #888;
-}
+.fade{opacity:0;transition:opacity 1s;}
+.fade.show{opacity:1;}
 </style>
 </head>
 
 <body>
 <div class="container">
-    <h1>🌱 人生數字探索</h1>
-    <div class="subtitle">
-        有些理解，不需要你解釋<br>
-        它本來就在你身上
-    </div>
 
+<h1>🌱 人生轉彎處</h1>
+<div class="subtitle">
+有些時候，不需要答案<br>
+只需要被好好理解
+</div>
+
+<!-- STEP 1 -->
+<div class="step active" id="step1">
+    <p><b>你現在，正在哪一個轉彎處？</b></p>
+    <div class="option" onclick="choose('工作')">💼 工作與方向</div>
+    <div class="option" onclick="choose('家庭')">🏠 家庭與關係</div>
+    <div class="option" onclick="choose('決策')">🧭 卡住的重要決定</div>
+</div>
+
+<!-- STEP 2 -->
+<div class="step" id="step2">
+    <p><b>謝謝你願意說。</b><br>接下來，請輸入你的出生年月日。</p>
     <input type="date" id="birthday">
-    <button onclick="start()">探索屬於我的那一段</button>
+    <button onclick="next()">繼續這段探索</button>
+</div>
 
-    <div class="loading" id="loading">
-        我們正在整理屬於你的節奏與步調…<br>
-        請稍等一下 🤍
-    </div>
+<!-- STEP 3 -->
+<div class="step" id="step3">
+    <div class="number fade" id="num"></div>
 
-    <div class="result" id="result">
-        <div class="number" id="lifeNumber"></div>
+    <div class="card fade" id="c1"></div>
+    <div class="card fade" id="c2"></div>
+    <div class="card fade" id="c3"></div>
+</div>
 
-        <div class="card">
-            <div class="card-title">你被理解的地方</div>
-            <div id="highlight"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">你真正的力量</div>
-            <div id="strength"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">一個溫柔的提醒</div>
-            <div id="challenge"></div>
-        </div>
-
-        <div class="quote" id="quote"></div>
-    </div>
-
-    <div class="footer">
-        如果這段文字讓你有一點點被接住，<br>
-        那就已經很值得了。
-    </div>
 </div>
 
 <script>
-function calculateLifeNumber(dateStr) {
-    let total = 0;
-    for (let ch of dateStr) {
-        if (!isNaN(ch)) total += Number(ch);
-    }
-    while (total >= 10) {
-        total = total.toString().split('').reduce((a, b) => a + Number(b), 0);
-    }
-    return total;
+let mode = "";
+
+function choose(m){
+    mode = m;
+    document.getElementById("step1").classList.remove("active");
+    document.getElementById("step2").classList.add("active");
 }
 
-const data = {
-1:{h:"你不是愛掌控，你只是習慣先站出來。",s:"你有啟動事情的能力，別人會自然跟上你。",c:"不需要每次都第一個，慢一點也很好。"},
-2:{h:"你不是想太多，你只是很在乎關係。",s:"你能感覺到別人忽略的細節。",c:"你的感受，也值得被照顧。"},
-3:{h:"你不是不專心，是靈感來得太快。",s:"你能為世界帶來笑與創意。",c:"留下來，把一件事完成。"},
-4:{h:"你不是固執，你只是想站得穩。",s:"你能讓混亂變成秩序。",c:"偶爾不用這麼用力也沒關係。"},
-5:{h:"你不是不安定，你只是適應力很強。",s:"你能在變化中找到路。",c:"選一個方向，好好走一段。"},
-6:{h:"你不是愛操心，你是在守護。",s:"你讓人感到安心。",c:"你不需要一直撐著。"},
-7:{h:"你不是冷淡，你只是在思考。",s:"你能看見事情的本質。",c:"有些話，說出來會更輕。"},
-8:{h:"你不是現實，你只是有責任感。",s:"你能把想法變成成果。",c:"你不必一個人扛。"},
-9:{h:"你不是情緒化，你只是感受很深。",s:"你能理解很多人的痛。",c:"放下，不代表不在乎。"}
+function lifeNumber(d){
+    let t=0;
+    for(let c of d){ if(!isNaN(c)) t+=Number(c);}
+    while(t>=10){ t=t.toString().split('').reduce((a,b)=>a+Number(b),0);}
+    return t;
+}
+
+const text = {
+1:"你會在沒人敢動時站出來。",
+2:"你會先感覺到氣氛的變化。",
+3:"你會想用不同方式表達自己。",
+4:"你會想把事情弄穩。",
+5:"你會開始想改變現狀。",
+6:"你會不自覺扛起責任。",
+7:"你會反覆思考每一個可能。",
+8:"你會思考實際可行的路。",
+9:"你會在意所有人的感受。"
 };
 
-const quotes = [
-"你不需要變成別人，才能被喜歡。",
-"慢一點，也是一種前進。",
-"你已經做得比你想像中多了。",
-"今天的你，也值得被溫柔對待。",
-"你不是走錯，只是在走自己的路。"
-];
+const remind = {
+工作:"這個階段，你不需要馬上證明什麼。",
+家庭:"你已經做得比你想像中多了。",
+決策:"允許自己暫時沒有答案。"
+};
 
-function start(){
-    const b = document.getElementById("birthday").value;
-    if(!b){ alert("請先輸入出生年月日 🙂"); return; }
+function next(){
+    const b=document.getElementById("birthday").value;
+    if(!b){alert("請輸入出生年月日 🙂");return;}
+    const n=lifeNumber(b);
 
-    document.getElementById("loading").style.display="block";
-    document.getElementById("result").style.display="none";
+    document.getElementById("step2").classList.remove("active");
+    document.getElementById("step3").classList.add("active");
 
-    setTimeout(()=>{
-        const n = calculateLifeNumber(b);
-        const d = data[n];
+    setTimeout(()=>{ 
+        document.getElementById("num").innerText=n;
+        document.getElementById("num").classList.add("show");
+    },300);
 
-        document.getElementById("lifeNumber").innerText = n;
-        document.getElementById("highlight").innerText = d.h;
-        document.getElementById("strength").innerText = d.s;
-        document.getElementById("challenge").innerText = d.c;
-        document.getElementById("quote").innerText =
-            quotes[Math.floor(Math.random()*quotes.length)];
+    setTimeout(()=>{ 
+        document.getElementById("c1").innerText=
+        "此刻的你，在「"+mode+"」上，"+text[n];
+        document.getElementById("c1").classList.add("show");
+    },900);
 
-        document.getElementById("loading").style.display="none";
-        document.getElementById("result").style.display="block";
-    }, 1600);
+    setTimeout(()=>{ 
+        document.getElementById("c2").innerText=
+        "這不是缺點，而是一種你一貫的生命節奏。";
+        document.getElementById("c2").classList.add("show");
+    },1500);
+
+    setTimeout(()=>{ 
+        document.getElementById("c3").innerText=
+        "給你的一句話：\n"+remind[mode];
+        document.getElementById("c3").classList.add("show");
+    },2100);
 }
 </script>
+
 </body>
 </html>
