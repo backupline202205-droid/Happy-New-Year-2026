@@ -38,6 +38,7 @@ button{
 button:hover{background:#e3edff;}
 .option{font-size:26px;}
 .small{font-size:13px;color:#666;}
+
 .card{
   border-radius:22px;
   padding:22px;
@@ -49,6 +50,24 @@ button:hover{background:#e3edff;}
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(10px);}
   to{opacity:1;transform:translateY(0);}
+}
+
+.end-section{
+  margin-top:16px;
+  background:linear-gradient(#f6d365,#fda085);
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+  color:#5a3e00;
+}
+.end-section a{
+  color:#5a3e00;
+  font-weight:bold;
+  text-decoration:underline;
+}
+.qr{
+  width:120px;
+  margin:12px auto;
 }
 ul{padding-left:18px;}
 </style>
@@ -63,16 +82,22 @@ ul{padding-left:18px;}
 const app=document.getElementById("app");
 const body=document.body;
 
-/* ========= 狀態 ========= */
-let state={
-  mode:"",
-  mood:"",
-  coping:"",
-  desire:"",
-  number:0
+let state={};
+
+/* ====== 彩虹色對照 ====== */
+const numberColors={
+1:"linear-gradient(#ff512f,#dd2476)",
+2:"linear-gradient(#ff9a44,#ff6a00)",
+3:"linear-gradient(#f7971e,#ffd200)",
+4:"linear-gradient(#56ab2f,#a8e063)",
+5:"linear-gradient(#43cea2,#185a9d)",
+6:"linear-gradient(#2193b0,#6dd5ed)",
+7:"linear-gradient(#614385,#516395)",
+8:"linear-gradient(#8e2de2,#4a00e0)",
+9:"linear-gradient(#d66efd,#fbc2eb)"
 };
 
-/* ========= 生命靈數資料 ========= */
+/* ====== 生命靈數資料 ====== */
 const numerology={
 1:{traits:["主動","領導","行動力","獨立","開創"],tone:"請相信你不是衝動，而是走在前面。"},
 2:{traits:["敏感","協調","傾聽","支持","連結"],tone:"你的溫柔，是世界需要的力量。"},
@@ -85,43 +110,23 @@ const numerology={
 9:{traits:["包容","完成","同理","放下","智慧"],tone:"結束，是為了新的開始。"}
 };
 
-/* ========= 動態語意模組 ========= */
+/* ====== 動態語意 ====== */
 function dynamicMessage(s,n){
-  const m1={
-    工作:"在工作與責任之中，",
-    家庭:"在家庭與關係裡，",
-    決策:"面對重要選擇時，",
-    自我:"回到你自己身上，"
-  };
-  const m2={
-    霧:"你其實已經感覺到迷惘，",
-    光:"你已經看見一條可能的路，",
-    夜:"你正在低調累積力量，",
-    風:"你渴望改變現狀，"
-  };
-  const m3={
-    撐著:"但你選擇先撐住不說，",
-    沉澱:"你讓自己慢慢沉澱，",
-    求助:"你願意尋求連結，",
-    轉移:"你暫時不想正面面對，"
-  };
-  const m4={
-    穩定:"因為你需要安全感。",
-    突破:"因為你不想再原地打轉。",
-    平衡:"因為你想找回內在秩序。",
-    放下:"因為你真的背太多了。"
-  };
+  const m1={工作:"在工作與責任之中，",家庭:"在家庭與關係裡，",決策:"面對重要選擇時，",自我:"回到你自己身上，"};
+  const m2={霧:"你其實已經感覺到迷惘，",光:"你已經看見一條可能的路，",夜:"你正在低調累積力量，",風:"你渴望改變現狀，"};
+  const m3={撐著:"但你選擇先撐住不說，",沉澱:"你讓自己慢慢沉澱，",求助:"你願意尋求連結，",轉移:"你暫時不想正面面對，"};
+  const m4={穩定:"因為你需要安全感。",突破:"因為你不想再原地打轉。",平衡:"因為你想找回內在秩序。",放下:"因為你真的背太多了。"};
   return m1[s.mode]+m2[s.mood]+m3[s.coping]+m4[s.desire]+" "+numerology[n].tone;
 }
 
-/* ========= 計算生命靈數 ========= */
+/* ====== 靈數計算 ====== */
 function lifeNumber(dob){
   let sum=dob.replaceAll("-","").split("").reduce((a,b)=>a+Number(b),0);
   while(sum>9) sum=sum.toString().split("").reduce((a,b)=>a+Number(b),0);
   return sum;
 }
 
-/* ========= Step 1 ========= */
+/* ====== 流程 ====== */
 app.innerHTML=`
 <h3>如果人生走到一個轉彎處</h3>
 <p>你現在最靠近哪個面向？</p>
@@ -131,79 +136,57 @@ app.innerHTML=`
 <button onclick="step1('自我')">🌱 自我狀態</button>
 `;
 
-function step1(v){
-  state.mode=v;
-  app.innerHTML=`
-  <h3>此刻的內在風景像哪一幅？</h3>
-  <button class="option" onclick="step2('霧')">🌫️</button>
-  <button class="option" onclick="step2('光')">🌅</button>
-  <button class="option" onclick="step2('夜')">🌌</button>
-  <button class="option" onclick="step2('風')">🌬️</button>
-  <p class="small">直覺選擇即可</p>
-  `;
-}
+function step1(v){state.mode=v;app.innerHTML=`
+<h3>此刻的內在風景像哪一幅？</h3>
+<button class="option" onclick="step2('霧')">🌫️</button>
+<button class="option" onclick="step2('光')">🌅</button>
+<button class="option" onclick="step2('夜')">🌌</button>
+<button class="option" onclick="step2('風')">🌬️</button>`;}
 
-/* ========= Step 2 ========= */
-function step2(v){
-  state.mood=v;
-  body.style.background=(v==="霧"||v==="夜")
-    ?"linear-gradient(#cfd9df,#52616b)"
-    :"linear-gradient(#fff1c1,#ffd89b)";
+function step2(v){state.mood=v;app.innerHTML=`
+<h3>面對這樣的狀態</h3>
+<button onclick="step3('撐著')">💪 撐著</button>
+<button onclick="step3('沉澱')">🪑 沉澱</button>
+<button onclick="step3('求助')">💬 求助</button>
+<button onclick="step3('轉移')">🎧 轉移</button>`;}
 
-  app.innerHTML=`
-  <h3>面對這樣的狀態</h3>
-  <p>你通常會怎麼做？</p>
-  <button onclick="step3('撐著')">💪 撐著不說</button>
-  <button onclick="step3('沉澱')">🪑 靜下來</button>
-  <button onclick="step3('求助')">💬 找人聊聊</button>
-  <button onclick="step3('轉移')">🎧 轉移注意</button>
-  `;
-}
+function step3(v){state.coping=v;app.innerHTML=`
+<h3>你更渴望哪一種？</h3>
+<button onclick="step4('穩定')">🔥 穩定</button>
+<button onclick="step4('突破')">🚀 突破</button>
+<button onclick="step4('平衡')">⚖️ 平衡</button>
+<button onclick="step4('放下')">🍃 放下</button>`;}
 
-/* ========= Step 3 ========= */
-function step3(v){
-  state.coping=v;
-  app.innerHTML=`
-  <h3>如果可以重新選擇方向</h3>
-  <p>你更渴望哪一種？</p>
-  <button onclick="step4('穩定')">🔥 穩定</button>
-  <button onclick="step4('突破')">🚀 突破</button>
-  <button onclick="step4('平衡')">⚖️ 平衡</button>
-  <button onclick="step4('放下')">🍃 放下</button>
-  `;
-}
+function step4(v){state.desire=v;app.innerHTML=`
+<h3>請輸入你的出生年月日</h3>
+<input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
+<button onclick="showResult()">產生我的圖卡</button>`;}
 
-/* ========= Step 4 ========= */
-function step4(v){
-  state.desire=v;
-  app.innerHTML=`
-  <h3>最後，請輸入你的出生年月日</h3>
-  <input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
-  <button onclick="showResult()">揭曉我的圖卡</button>
-  `;
-}
-
-/* ========= 結果 ========= */
 function showResult(){
   const dob=document.getElementById("dob").value;
   if(!dob){alert("請輸入日期");return;}
   state.number=lifeNumber(dob);
-
   const n=state.number;
-  const color=(state.mood==="霧"||state.mood==="夜")
-    ?"linear-gradient(#4b6cb7,#182848)"
-    :"linear-gradient(#f7971e,#ffd200)";
-
+  const color=numberColors[n];
   body.style.background=color;
 
   app.innerHTML=`
   <div class="card" style="background:${color}">
     <h3 class="fade">你的生命靈數是 ${n}</h3>
-    <p class="fade small">你的核心特質：</p>
-    <ul class="fade">
-      ${numerology[n].traits.map(t=>`<li>${t}</li>`).join("")}
-    </ul>
+    <ul class="fade">${numerology[n].traits.map(t=>`<li>${t}</li>`).join("")}</ul>
     <p class="fade">${dynamicMessage(state,n)}</p>
+  </div>
+
+  <div class="end-section fade">
+    <p>期待有機會聊聊，<br>
+    點擊連結或掃描 QRCode<br>
+    即可與 Better（重義）聯絡：</p>
+    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
+      https://better885.pse.is/Line2BetterHung
+    </a>
+    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
+      <img src="BetterQRCode.jpg" class="qr">
+    </a>
   </div>
   `;
 }
