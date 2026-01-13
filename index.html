@@ -128,8 +128,8 @@ function lifeNumber(dob){
 
 /* ====== 流程 ====== */
 app.innerHTML=`
-<h3>如果人生走到一個轉彎處</h3>
-<p>你現在最靠近哪個面向？</p>
+<h3>如果走到人生一個轉彎處</h3>
+<p>現在最想關注哪個面向？</p>
 <button onclick="step1('工作')">🧳 工作 / 事業</button>
 <button onclick="step1('家庭')">🏠 家庭 / 關係</button>
 <button onclick="step1('決策')">🧭 重大決策</button>
@@ -145,10 +145,10 @@ function step1(v){state.mode=v;app.innerHTML=`
 
 function step2(v){state.mood=v;app.innerHTML=`
 <h3>面對這樣的狀態</h3>
-<button onclick="step3('撐著')">💪 撐著</button>
-<button onclick="step3('沉澱')">🪑 沉澱</button>
-<button onclick="step3('求助')">💬 求助</button>
-<button onclick="step3('轉移')">🎧 轉移</button>`;}
+<button onclick="step3('撐著不說')">💪 撐著不說</button>
+<button onclick="step3('靜下沉澱')">🪑 靜下沉澱</button>
+<button onclick="step3('找人聊聊')">💬 找人聊聊</button>
+<button onclick="step3('轉移注意')">🎧 轉移注意</button>`;}
 
 function step3(v){state.coping=v;app.innerHTML=`
 <h3>你更渴望哪一種？</h3>
