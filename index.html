@@ -71,26 +71,35 @@
         document.getElementById(nextId).classList.add('active');
     }
 
-    async function finish(currentId, choice) {
+async function finish(currentId, choice) {
         results.push(choice);
         document.getElementById(currentId).style.display = 'none';
         document.getElementById('loading').style.display = 'block';
 
         const finalScore = results.join("");
-        // 這是您提供的 GAS URL
         const gasUrl = "https://script.google.com/macros/s/AKfycbxCY1O95HjRMLzWRUZ6qc_rlaxZ0h4d4HnlXkfq5O6t8PK08rIAvhoVQmfhcR8IsR4r/exec";
 
         try {
-            // 【關鍵改動】直接傳送到後台通知您，不再要求玩家在對話框發訊
-            await fetch(gasUrl, {
+            // 先發送資料
+            fetch(gasUrl, {
                 method: "POST",
                 body: JSON.stringify({ result: finalScore }),
                 mode: 'no-cors'
             });
 
-            alert("✨ 探索完成 ✨\n感謝您的參與，這份誠摯的選擇已傳達。🌿");
-            liff.closeWindow(); 
+            // 稍微停頓 0.5 秒，給瀏覽器一點緩衝時間
+            setTimeout(() => {
+                alert("✨ 探索完成 ✨\n感謝您的參與，這份誠摯的選擇已傳達。🌿");
+                // 嘗試關閉視窗，如果無效則導向您的官方帳號
+                if (liff.isInClient()) {
+                    liff.closeWindow();
+                } else {
+                    window.location.href = "https://line.me/R/ti/p/@309fyvuw"; // 導向您的 LINE@
+                }
+            }, 500);
+
         } catch (error) {
+            console.error(error);
             alert("完成！感謝您的參與喔！☕");
             liff.closeWindow();
         }
