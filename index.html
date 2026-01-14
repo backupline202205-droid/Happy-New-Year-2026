@@ -54,15 +54,20 @@
     let results = [];
 
     async function main() {
-        try {
-            await liff.init({ liffId: "2008852500-T0YTrryy" });
+    try {
+        await liff.init({ liffId: "2008852500-T0YTrryy" });
+        // 🔍 只在 LINE 環境內執行自動登入，避免在 Chrome 網址列輸入時亂跳
+        if (liff.isInClient()) {
             if (!liff.isLoggedIn()) {
                 liff.login(); 
             }
-        } catch (err) {
-            console.error("初始化失敗", err);
+        } else {
+            console.log("目前在外部瀏覽器，不執行自動跳轉登入");
         }
+    } catch (err) {
+        console.error("初始化失敗", err);
     }
+}
     main();
 
     function nextStep(currentId, nextId, choice) {
