@@ -53,17 +53,24 @@
 <script>
     let results = [];
 
-    async function main() {
-        try {
-            await liff.init({ liffId: "2008852500-T0YTrryy" });
-            if (!liff.isLoggedIn()) {
-                liff.login(); 
-            }
-        } catch (err) {
-            console.error("初始化失敗", err);
-        }
+// 💡 修改您的 main 函式，增加一個環境檢查
+async function main() {
+    // 檢查網址參數，如果不是從 LINE 開啟，就不執行初始化
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLiffStart = urlParams.has('liff.state') || navigator.userAgent.includes('Line');
+
+    if (!isLiffStart) {
+        console.log("偵測到非 LINE 環境，為了維持呼吸感，暫不啟動 LIFF 引擎 🌿");
+        return; 
     }
-    main();
+
+    try {
+        await liff.init({ liffId: "2008852500-T0YTrryy" });
+        // ...其餘登入邏輯
+    } catch (err) {
+        console.error("初始化失敗", err);
+    }
+}    main();
 
     function nextStep(currentId, nextId, choice) {
         results.push(choice);
