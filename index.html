@@ -50,34 +50,19 @@
         <div id="loading" style="display:none;">正在為你傳遞這份誠心... 🕊️</div>
     </div>
 
- <script>
+<script>
     let results = [];
 
-    // 1. 初始化 LIFF
-async function main() {
-    try {
-        await liff.init({ 
-            liffId: "2008852500-T0YTrryy",
-            withLoginOnExternalBrowser: true 
-        });
-
-        if (!liff.isLoggedIn()) {
-            // 強制要求這三個權限
-            liff.login({ scope: "profile,openid,chat_message.write" });
-        } else {
-            const context = liff.getContext();
-            // 2026 最新檢查：如果發現當前登入沒有包含 chat_message.write，強制登出重新來
-            if (!context.scope || !context.scope.includes("chat_message.write")) {
-                console.log("偵測到權限不足，正在重新要求授權...");
-                liff.logout(); 
-                liff.login({ scope: "profile,openid,chat_message.write" });
+    async function main() {
+        try {
+            await liff.init({ liffId: "2008852500-T0YTrryy" });
+            if (!liff.isLoggedIn()) {
+                liff.login(); 
             }
+        } catch (err) {
+            console.error("初始化失敗", err);
         }
-    } catch (err) {
-        alert("初始化失敗：" + (err.code || err.message));
     }
-}
-
     main();
 
     function nextStep(currentId, nextId, choice) {
@@ -92,26 +77,22 @@ async function main() {
         document.getElementById('loading').style.display = 'block';
 
         const finalScore = results.join("");
-        
-        // 2. 在傳送前再次確認權限
-        if (!liff.isLoggedIn()) {
-            alert("請先完成 LINE 登入。");
-            liff.login();
-            return;
-        }
+        // 這是您提供的 GAS URL
+        const gasUrl = "https://script.google.com/macros/s/AKfycbxCY1O95HjRMLzWRUZ6qc_rlaxZ0h4d4HnlXkfq5O6t8PK08rIAvhoVQmfhcR8IsR4r/exec";
 
         try {
-            await liff.sendMessages([
-                {
-                    type: 'text',
-                    text: `✨ 專業氣質探索完成 ✨\n\n我的選擇結果是：【${finalScore}】 🎈\n\n我已經準備好與你開啟一場「值得坐下來聽 5 分鐘」的誠懇對話了。期待你的回覆！☕🌷`
-                }
-            ]);
+            // 【關鍵改動】直接傳送到後台通知您，不再要求玩家在對話框發訊
+            await fetch(gasUrl, {
+                method: "POST",
+                body: JSON.stringify({ result: finalScore }),
+                mode: 'no-cors'
+            });
+
+            alert("✨ 探索完成 ✨\n感謝您的參與，這份誠摯的選擇已傳達。🌿");
             liff.closeWindow(); 
         } catch (error) {
-            console.error('傳送失敗', error);
-            // 這裡會顯示詳細錯誤，如果是 403，代表 Scopes 真的沒勾或授權沒過
-            alert("傳送失敗！\n錯誤代碼：" + error.code + "\n訊息：" + error.message);
+            alert("完成！感謝您的參與喔！☕");
+            liff.closeWindow();
         }
     }
 </script>
