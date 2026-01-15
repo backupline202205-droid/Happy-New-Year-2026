@@ -106,25 +106,31 @@ let state = {
 /* ====== 1. LIFF 初始化與取得個人資料 ====== */
 async function main() {
     try {
-        await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
-        
-        // 💡 邏輯非常簡單：只要沒登入，不管是誰、不管在哪開，通通去登入
-        if (!liff.isLoggedIn()) {
-            liff.login(); 
-            return; // 沒登入就停止往下跑，避免抓到「未知來賓」
+        await liff.init({ liffId: "2008876179-yvn4oUyo" });
+        // 💡 只有在登入狀態下才主動抓取，不強制跳轉登入
+        if (liff.isLoggedIn()) {
+            await fetchProfile();
+        } else {
+            state.userName = "未登入來賓";
+            state.userStatus = "訪客模式探索中 🌿";
         }
-
-        // 走到這裡代表一定登入成功了
-        const profile = await liff.getProfile();
-        state.userName = profile.displayName;
-        state.userStatus = profile.statusMessage || "🌿";
-        state.userPic = profile.pictureUrl;
-        
+        state.deviceInfo = navigator.userAgent;
     } catch (err) {
         console.error("初始化失敗", err);
     }
 }
-main(); 
+
+async function fetchProfile() {
+    try {
+        const profile = await liff.getProfile();
+        state.userName = profile.displayName;
+        state.userStatus = profile.statusMessage || "這位朋友很低調 🌿"; // 💡 成功帶入狀態
+        state.userPic = profile.pictureUrl;
+    } catch (e) {
+        console.error("資料抓取微恙");
+    }
+}
+main();
 
 /* ====== 彩虹色對照 ====== */
 const numberColors = {
@@ -202,9 +208,16 @@ function step4(v) { state.desire = v; app.innerHTML = `
 <input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
 <button onclick="showResult()">🔮想看看如何前進🧭</button>`; }
 
-function showResult() {
+
+async function showResult() {
     const dob = document.getElementById("dob").value;
     if (!dob) { alert("請輸入日期"); return; }
+
+    // 💡 時間差保險：若已登入但名字還是預設值，強迫等待抓完
+    if (liff.isLoggedIn() && state.userName === "未登入來賓") {
+        await fetchProfile();
+        }
+
     state.number = lifeNumber(dob);
     const n = state.number;
     const color = numberColors[n];
