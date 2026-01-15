@@ -3,86 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <title>人生轉彎處｜天賦數字互動體驗</title>
-
 <style>
-body{
-  margin:0;
-  font-family:"Helvetica Neue", sans-serif;
-  background:#f5f6f8;
-  transition:background 0.8s;
-}
-#wrapper{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-#app{
-  width:390px;
-  background:#fff;
-  border-radius:26px;
-  padding:26px;
-  box-shadow:0 20px 50px rgba(0,0,0,.18);
-}
+body{margin:0;font-family:"Helvetica Neue",sans-serif;background:#f5f6f8;transition:background 0.8s;}
+#wrapper{min-height:100vh;display:flex;justify-content:center;align-items:center;}
+#app{width:390px;background:#fff;border-radius:26px;padding:26px;box-shadow:0 20px 50px rgba(0,0,0,.18);}
 h3{margin-top:0;}
-button{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:14px;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
-  background:#f0f0f0;
-}
+button{width:100%;padding:12px;margin:8px 0;border-radius:14px;border:none;font-size:16px;cursor:pointer;background:#f0f0f0;}
 button:hover{background:#e3edff;}
 .option{font-size:26px;}
-.small{font-size:13px;color:#666;}
-
-.card{
-  border-radius:22px;
-  padding:22px;
-  color:#fff;
-  box-shadow:0 15px 40px rgba(0,0,0,.25);
-  animation:fadeIn 1s ease;
-}
+.card{border-radius:22px;padding:22px;color:#fff;box-shadow:0 15px 40px rgba(0,0,0,.25);animation:fadeIn 1s ease;}
+.number-section{text-align:center;margin:20px 0;}
+.number-card-img{width:100%;max-width:100%;height:auto;display:block;margin:0 auto;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.15);}
+.end-section{margin-top:16px;background:linear-gradient(#f6d365,#fda085);border-radius:18px;padding:16px;text-align:center;color:#5a3e00;}
+.end-section a{color:#5a3e00;font-weight:bold;text-decoration:underline;}
+.qr{width:120px;margin:12px auto;}
 .fade{animation:fadeIn 1.4s ease;}
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-.number-section {
-  text-align: center;
-  margin: 20px 0;
-}
-.number-card-img {
-  width: 100%;
-  max-width: 100%; 
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-
-.end-section{
-  margin-top:16px;
-  background:linear-gradient(#f6d365,#fda085);
-  border-radius:18px;
-  padding:16px;
-  text-align:center;
-  color:#5a3e00;
-}
-.end-section a{
-  color:#5a3e00;
-  font-weight:bold;
-  text-decoration:underline;
-}
-.qr{
-  width:120px;
-  margin:12px auto;
-}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 ul{padding-left:18px;}
 </style>
 </head>
@@ -97,79 +33,58 @@ ul{padding-left:18px;}
 const app = document.getElementById("app");
 const body = document.body;
 
-// 💡 確保所有全域變數都在最上方
+// 💡 1. 完善的 state 物件結構
 let state = {
     userName: "未知來賓",
     userPic: "",
     userStatusMessage: "讀取中...",
-    deviceInfo: navigator.userAgent, // 先預設抓取瀏覽器資訊
-    mode: "",
-    mood: "",
-    coping: "",
-    desire: "",
-    number: null
+    deviceInfo: navigator.userAgent, // 一開始就抓取
+    mode: "", mood: "", coping: "", desire: "", number: null
 };
 
-/* ====== 1. LIFF 初始化與取得個人資料 ====== */
+/* ====== 2. LIFF 初始化 (加入 async 鎖定) ====== */
 async function main() {
     try {
         await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
         
-        // 🔍 只在 LINE APP 內執行強制登入邏輯，避免外部瀏覽器亂跳
         if (liff.isInClient()) {
             if (!liff.isLoggedIn()) {
                 liff.login(); 
+                return;
             }
         }
 
-        // 只要有登入，就立刻抓取並同步資料到 state 中
         if (liff.isLoggedIn()) {
-            const profile = await liff.getProfile();
-            state.userName = profile.displayName;
-            state.userPic = profile.pictureUrl || "";
-            state.userStatusMessage = profile.statusMessage || "這位朋友很低調，沒寫狀態內容";
+            await fetchProfile(); // 呼叫共用的抓取函式
         } else {
             state.userStatusMessage = "非 LINE 登入環境";
         }
     } catch (err) {
         console.error("LIFF 初始化失敗", err);
-        state.userStatusMessage = "LIFF 初始化失敗";
+        state.userStatusMessage = "初始化出錯: " + err;
+    }
+}
+
+// 獨立抓取函式，方便重複呼叫
+async function fetchProfile() {
+    try {
+        const profile = await liff.getProfile();
+        state.userName = profile.displayName;
+        state.userPic = profile.pictureUrl || "";
+        state.userStatusMessage = profile.statusMessage || "這位朋友很低調，沒寫狀態內容";
+    } catch (e) {
+        console.error("抓取 Profile 失敗", e);
     }
 }
 main(); 
 
-/* ====== 彩虹色對照 ====== */
-const numberColors = {
-    1: "linear-gradient(#ff512f,#dd2476)",
-    2: "linear-gradient(#ff9a44,#ff6a00)",
-    3: "linear-gradient(#f7971e,#ffd200)",
-    4: "linear-gradient(#56ab2f,#a8e063)",
-    5: "linear-gradient(#43cea2,#185a9d)",
-    6: "linear-gradient(#2193b0,#6dd5ed)",
-    7: "linear-gradient(#614385,#516395)",
-    8: "linear-gradient(#8e2de2,#4a00e0)",
-    9: "linear-gradient(#d66efd,#fbc2eb)"
-};
-
-/* ====== 生命靈數資料 ====== */
-const numerology = {
-    1: { traits: ["主動", "領導", "行動力", "獨立", "開創"], tone: "請相信你不是衝動，而是走在前面。" },
-    2: { traits: ["敏感", "協調", "傾聽", "支持", "連結"], tone: "你的溫柔，是世界需要的力量。" },
-    3: { traits: ["表達", "創意", "幽默", "感染力", "樂觀"], tone: "被看見的，是你真實的樣子。" },
-    4: { traits: ["穩定", "踏實", "結構", "耐心", "責任"], tone: "慢一點，你反而走得最遠。" },
-    5: { traits: ["自由", "變化", "彈性", "體驗", "行動"], tone: "改變不是逃離，而是成長。" },
-    6: { traits: ["照顧", "承擔", "關係", "責任", "愛"], tone: "請記得，你也值得被照顧。" },
-    7: { traits: ["思考", "洞察", "內省", "真實", "深度"], tone: "安靜，是你整理世界的方式。" },
-    8: { traits: ["力量", "實踐", "影響", "資源", "成就"], tone: "你有能力承載更大的局。" },
-    9: { traits: ["包容", "完成", "同理", "放下", "智慧"], tone: "暫停，是為了新的開始。" }
-};
+/* ====== 3. 測驗邏輯 (維持不變) ====== */
+const numberColors = { 1: "linear-gradient(#ff512f,#dd2476)", 2: "linear-gradient(#ff9a44,#ff6a00)", 3: "linear-gradient(#f7971e,#ffd200)", 4: "linear-gradient(#56ab2f,#a8e063)", 5: "linear-gradient(#43cea2,#185a9d)", 6: "linear-gradient(#2193b0,#6dd5ed)", 7: "linear-gradient(#614385,#516395)", 8: "linear-gradient(#8e2de2,#4a00e0)", 9: "linear-gradient(#d66efd,#fbc2eb)" };
+const numerology = { 1: { traits: ["主動", "領導", "行動力", "獨立", "開創"], tone: "請相信你不是衝動，而是走在前面。" }, 2: { traits: ["敏感", "協調", "傾聽", "支持", "連結"], tone: "你的溫柔，是世界需要的力量。" }, 3: { traits: ["表達", "創意", "幽默", "感染力", "樂觀"], tone: "被看見的，是你真實的樣子。" }, 4: { traits: ["穩定", "踏實", "結構", "耐心", "責任"], tone: "慢一點，你反而走得最遠。" }, 5: { traits: ["自由", "變化", "彈性", "體驗", "行動"], tone: "改變不是逃離，而是成長。" }, 6: { traits: ["照顧", "承擔", "關係", "責任", "愛"], tone: "請記得，你也值得被照顧。" }, 7: { traits: ["思考", "洞察", "內省", "真實", "深度"], tone: "安靜，是你整理世界的方式。" }, 8: { traits: ["力量", "實踐", "影響", "資源", "成就"], tone: "你有能力承載更大的局。" }, 9: { traits: ["包容", "完成", "同理", "放下", "智慧"], tone: "暫停，是為了新的開始。" } };
 
 function dynamicMessage(s, n) {
     const m1 = { 工作: "在工作與責任之中，", 家庭: "在家庭與關係裡，", 決策: "面對重要選擇時，", 自我: "回到你自己身上，" };
-    const m2 = { 霧: "你其實已經感覺到迷惘，", 光: "你已經看見一條可能的路，", 夜: "你正在低調累積力量，", 風: "你渴望改變現狀，" };
-    const m3 = { 撐著不說: "但你選擇先撐住不說，", 靜下沉澱: "你讓自己慢慢沉澱，", 找人聊聊: "你願意尋求連結，", 轉移注意: "你暫時不想正面面對，" };
-    const m4 = { 穩定: "因為你需要安全感。", 突破: "因為你不想再原地打轉。", 平衡: "因為你想找回內在秩序。", 放下: "因為你真的背太多了。" };
-    return m1[s.mode] + m2[s.mood] + m3[s.coping] + m4[s.desire] + " " + numerology[n].tone;
+    return m1[s.mode] + numerology[n].tone;
 }
 
 function lifeNumber(dob) {
@@ -179,123 +94,62 @@ function lifeNumber(dob) {
 }
 
 /* ====== 流程起始 ====== */
-app.innerHTML = `
-<h3>如果走到人生一個轉彎處</h3>
-<p>現在最想關注哪個面向？</p>
-<button onclick="step1('工作')">🧳 工作 / 事業</button>
-<button onclick="step1('家庭')">🏠 家庭 / 關係</button>
-<button onclick="step1('決策')">🧭 重大決策</button>
-<button onclick="step1('自我')">🌱 自我狀態</button>
-`;
+app.innerHTML = `<h3>如果走到人生一個轉彎處</h3><p>現在最想關注哪個面向？</p>
+<button onclick="step1('工作')">🧳 工作 / 事業</button><button onclick="step1('家庭')">🏠 家庭 / 關係</button>
+<button onclick="step1('決策')">🧭 重大決策</button><button onclick="step1('自我')">🌱 自我狀態</button>`;
 
-function step1(v) { state.mode = v; app.innerHTML = `
-<h3>此刻的內在風景像哪一幅？</h3>
-<button class="option" onclick="step2('霧')">🌫️</button>
-<button class="option" onclick="step2('光')">🌅</button>
-<button class="option" onclick="step2('夜')">🌌</button>
-<button class="option" onclick="step2('風')">🌬️</button>`; }
+function step1(v) { state.mode = v; app.innerHTML = `<h3>此刻的內在風景？</h3>
+<button class="option" onclick="step2('霧')">🌫️</button><button class="option" onclick="step2('光')">🌅</button>
+<button class="option" onclick="step2('夜')">🌌</button><button class="option" onclick="step2('風')">🌬️</button>`; }
 
-function step2(v) { state.mood = v; app.innerHTML = `
-<h3>面對這樣的狀態</h3>
-<button onclick="step3('撐著不說')">💪😑 撐著不說</button>
-<button onclick="step3('靜下沉澱')">🧘‍♀️🧘🏼‍ 靜下沉澱</button>
-<button onclick="step3('找人聊聊')">💬👥 找人聊聊</button>
-<button onclick="step3('轉移注意')">🎧🤹‍ 轉移注意</button>`; }
+function step2(v) { state.mood = v; app.innerHTML = `<h3>面對這樣的狀態...</h3>
+<button onclick="step3('撐著不說')">💪 撐著不說</button><button onclick="step3('靜下沉澱')">🧘 靜下沉澱</button>
+<button onclick="step3('找人聊聊')">💬 找人聊聊</button><button onclick="step3('轉移注意')">🎧 轉移注意</button>`; }
 
-function step3(v) { state.coping = v; app.innerHTML = `
-<h3>你更渴望哪一種？</h3>
-<button onclick="step4('穩定')">🔥 穩定</button>
-<button onclick="step4('突破')">🚀 突破</button>
-<button onclick="step4('平衡')">⚖️ 平衡</button>
-<button onclick="step4('放下')">🍃 放下</button>`; }
+function step3(v) { state.coping = v; app.innerHTML = `<h3>你更渴望哪一種？</h3>
+<button onclick="step4('穩定')">🔥 穩定</button><button onclick="step4('突破')">🚀 突破</button>
+<button onclick="step4('平衡')">⚖️ 平衡</button><button onclick="step4('放下')">🍃 放下</button>`; }
 
-function step4(v) { state.desire = v; app.innerHTML = `
-<h3>請輸入你的西元出生年月日</h3>
+function step4(v) { state.desire = v; app.innerHTML = `<h3>請輸入你的西元出生年月日</h3>
 <input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
-<button onclick="showResult()">🔮想看看如何前進🧭</button>`; }
+<button onclick="showResult()">🔮 想看看如何前進 🧭</button>`; }
 
-function showResult() {
+async function showResult() {
     const dob = document.getElementById("dob").value;
     if (!dob) { alert("請輸入日期"); return; }
+    
+    // 💡 關鍵保險：如果這時候名字還是「未知來賓」，強制再抓一次
+    if (liff.isLoggedIn() && state.userName === "未知來賓") {
+        await fetchProfile();
+    }
+
     state.number = lifeNumber(dob);
     const n = state.number;
-    const color = numberColors[n];
-    body.style.background = color;
-
+    body.style.background = numberColors[n];
     const traits = numerology[n].traits.join("、"); 
     const blessing = dynamicMessage(state, n); 
-    const fileName = `N0${n}C.png`;
 
     app.innerHTML = `
-  <div class="card" style="background:${color}">
+  <div class="card" style="background:${numberColors[n]}">
     <h3 class="fade">你的專屬天賦數字是 ${n}</h3>
     <ul class="fade">${numerology[n].traits.map(t => `<li>${t}</li>`).join("")}</ul>
     <p class="fade">${blessing}</p>
   </div>
-
-  <div class="number-section fade">
-    <img src="${fileName}" class="number-card-img" alt="天賦數字圖卡">
-  </div>
-
-  <div class="end-section fade">
-    <p>期待有機會聊聊，<br>
-    點擊連結或掃描 QRCode<br>
-    即可與 Better（重義）聯絡：</p>
-    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
-      https://better885.pse.is/Line2BetterHung
-    </a>
-    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
-      <img src="BetterQRCode.jpg" class="qr">
-    </a>
-<br>
-    如果有被小小Touch到，歡迎分享給👫最好的朋友💌<br>
-<br>
-<br>
-    也期待您與我分享您的圖卡🎴<br>
-<br>
-    2026/01/15 AM 11:30 Ver 2.6.2 (資訊修復版)<br>
-  </div>
-  `;
+  <div class="number-section fade"><img src="N0${n}C.png" class="number-card-img"></div>
+  <div class="end-section fade"><p>與 Better（重義）聯絡：</p>
+    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">點此聯絡</a><br>
+    <img src="BetterQRCode.jpg" class="qr"><br><br>
+    <small>2026/01/15 Ver 2.6.5 (強效鎖定版)</small>
+  </div>`;
 
     sendToBackstage(dob, n, traits, blessing);
 }
 
 async function sendToBackstage(dob, n, traits, blessing) {
     const gasUrl = "https://script.google.com/macros/s/AKfycbw9IbWl6aCYYzF8x4T6ttW5NlKpvPQEvFmE8DgRhf7ya43r9PJSwmSZk7KwMrVySGL9/exec";
+    const fullReport = `🌟 【天賦數字探索報告】 🌟\n👤 朋友姓名：${state.userName}\n🔮 朋友狀態：${state.userStatusMessage}\n📅 朋友生日：${dob}\n🔢 天賦數字：${n} 號人\n✨ 特質標籤：${traits}\n📱 裝置設備：${state.deviceInfo}\n🖼️ 頭像網址：${state.userPic}\n✉️ 祝福：${blessing}`.trim();
 
-    // 💡 發送前最後一次確認 state 資訊，確保「事實對齊」
-    const fullReport = `
-🌟 【天賦數字探索報告】 🌟
----------------------------
-👤 朋友姓名：${state.userName}
-🔮 朋友狀態：${state.userStatusMessage}
-📅 朋友生日：${dob}
-🔢 天賦數字：${n} 號人
-✨ 特質標籤：${traits}
-📱 裝置設備：${state.deviceInfo}
-🖼️ 頭像網址：${state.userPic}
----------------------------
-🧠 探索軌跡：
-1. 關注面向：${state.mode}
-2. 內在風景：${state.mood}
-3. 面對狀態：${state.coping}
-4. 渴望結果：${state.desire}
----------------------------
-✉️ 祝福文案：
-「${blessing}」
----------------------------
-📜 誠摯記錄於您的數位沙龍 🌿
-    `.trim();
-
-    try {
-        fetch(gasUrl, {
-            method: "POST",
-            body: JSON.stringify({ result: fullReport }),
-            mode: 'no-cors'
-        });
-    } catch (e) {
-        console.log("靜默傳送失敗");
-    }
+    fetch(gasUrl, { method: "POST", body: JSON.stringify({ result: fullReport }), mode: 'no-cors' });
 }
 </script>
 </body>
