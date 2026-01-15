@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>人生轉彎處｜天賦數字互動體驗</title>
 <style>
+/* CSS 部分維持您的專業美感設定 */
 body{margin:0;font-family:"Helvetica Neue",sans-serif;background:#f5f6f8;transition:background 0.8s;}
 #wrapper{min-height:100vh;display:flex;justify-content:center;align-items:center;}
 #app{width:390px;background:#fff;border-radius:26px;padding:26px;box-shadow:0 20px 50px rgba(0,0,0,.18);}
@@ -33,16 +34,16 @@ ul{padding-left:18px;}
 const app = document.getElementById("app");
 const body = document.body;
 
-// 💡 1. 完善的 state 物件結構
+// 💡 1. 初始狀態與裝置資訊
 let state = {
     userName: "未知來賓",
     userPic: "",
     userStatusMessage: "讀取中...",
-    deviceInfo: navigator.userAgent, // 一開始就抓取
+    deviceInfo: navigator.userAgent,
     mode: "", mood: "", coping: "", desire: "", number: null
 };
 
-/* ====== 2. LIFF 初始化 (加入 async 鎖定) ====== */
+/* ====== 2. LIFF 初始化 (使用 PowerNumber202601 正確 ID) ====== */
 async function main() {
     try {
         await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
@@ -55,7 +56,7 @@ async function main() {
         }
 
         if (liff.isLoggedIn()) {
-            await fetchProfile(); // 呼叫共用的抓取函式
+            await fetchProfile(); // 確保 main 執行時先嘗試抓取一次
         } else {
             state.userStatusMessage = "非 LINE 登入環境";
         }
@@ -65,26 +66,26 @@ async function main() {
     }
 }
 
-// 獨立抓取函式，方便重複呼叫
+// 獨立抓取函式，增加 await 穩定性
 async function fetchProfile() {
     try {
         const profile = await liff.getProfile();
         state.userName = profile.displayName;
         state.userPic = profile.pictureUrl || "";
-        state.userStatusMessage = profile.statusMessage || "這位朋友很低調，沒寫狀態內容";
+        state.userStatusMessage = profile.statusMessage || "無狀態簽名";
     } catch (e) {
-        console.error("抓取 Profile 失敗", e);
+        console.error("抓取資料失敗", e);
     }
 }
 main(); 
 
-/* ====== 3. 測驗邏輯 (維持不變) ====== */
+/* ====== 3. 天賦數字資料與對照表 ====== */
 const numberColors = { 1: "linear-gradient(#ff512f,#dd2476)", 2: "linear-gradient(#ff9a44,#ff6a00)", 3: "linear-gradient(#f7971e,#ffd200)", 4: "linear-gradient(#56ab2f,#a8e063)", 5: "linear-gradient(#43cea2,#185a9d)", 6: "linear-gradient(#2193b0,#6dd5ed)", 7: "linear-gradient(#614385,#516395)", 8: "linear-gradient(#8e2de2,#4a00e0)", 9: "linear-gradient(#d66efd,#fbc2eb)" };
-const numerology = { 1: { traits: ["主動", "領導", "行動力", "獨立", "開創"], tone: "請相信你不是衝動，而是走在前面。" }, 2: { traits: ["敏感", "協調", "傾聽", "支持", "連結"], tone: "你的溫柔，是世界需要的力量。" }, 3: { traits: ["表達", "創意", "幽默", "感染力", "樂觀"], tone: "被看見的，是你真實的樣子。" }, 4: { traits: ["穩定", "踏實", "結構", "耐心", "責任"], tone: "慢一點，你反而走得最遠。" }, 5: { traits: ["自由", "變化", "彈性", "體驗", "行動"], tone: "改變不是逃離，而是成長。" }, 6: { traits: ["照顧", "承擔", "關係", "責任", "愛"], tone: "請記得，你也值得被照顧。" }, 7: { traits: ["思考", "洞察", "內省", "真實", "深度"], tone: "安靜，是你整理世界的方式。" }, 8: { traits: ["力量", "實踐", "影響", "資源", "成就"], tone: "你有能力承載更大的局。" }, 9: { traits: ["包容", "完成", "同理", "放下", "智慧"], tone: "暫停，是為了新的開始。" } };
+const numerology = { 1: { traits: ["主動", "領導", "行動力"], tone: "請相信你不是衝動，而是走在前面。" }, 2: { traits: ["敏感", "協調", "傾聽"], tone: "你的溫柔，是世界需要的力量。" }, 3: { traits: ["表達", "創意", "幽默"], tone: "被看見的，是你真實的樣子。" }, 4: { traits: ["穩定", "踏實", "結構"], tone: "慢一點，你反而走得最遠。" }, 5: { traits: ["自由", "變化", "彈性"], tone: "改變不是逃離，而是成長。" }, 6: { traits: ["照顧", "承擔", "關係"], tone: "請記得，你也值得被照顧。" }, 7: { traits: ["思考", "洞察", "內省"], tone: "安靜，是你整理世界的方式。" }, 8: { traits: ["力量", "實踐", "影響"], tone: "你有能力承載更大的局。" }, 9: { traits: ["包容", "完成", "智慧"], tone: "暫停，是為了新的開始。" } };
 
 function dynamicMessage(s, n) {
     const m1 = { 工作: "在工作與責任之中，", 家庭: "在家庭與關係裡，", 決策: "面對重要選擇時，", 自我: "回到你自己身上，" };
-    return m1[s.mode] + numerology[n].tone;
+    return (m1[s.mode] || "在生活之中，") + numerology[n].tone;
 }
 
 function lifeNumber(dob) {
@@ -93,7 +94,7 @@ function lifeNumber(dob) {
     return sum;
 }
 
-/* ====== 流程起始 ====== */
+/* ====== 測驗流程 ====== */
 app.innerHTML = `<h3>如果走到人生一個轉彎處</h3><p>現在最想關注哪個面向？</p>
 <button onclick="step1('工作')">🧳 工作 / 事業</button><button onclick="step1('家庭')">🏠 家庭 / 關係</button>
 <button onclick="step1('決策')">🧭 重大決策</button><button onclick="step1('自我')">🌱 自我狀態</button>`;
@@ -118,7 +119,7 @@ async function showResult() {
     const dob = document.getElementById("dob").value;
     if (!dob) { alert("請輸入日期"); return; }
     
-    // 💡 關鍵保險：如果這時候名字還是「未知來賓」，強制再抓一次
+    // 💡 核心保險：發送前若名字仍為「未知」，則強迫等待 fetchProfile 完成
     if (liff.isLoggedIn() && state.userName === "未知來賓") {
         await fetchProfile();
     }
@@ -138,8 +139,8 @@ async function showResult() {
   <div class="number-section fade"><img src="N0${n}C.png" class="number-card-img"></div>
   <div class="end-section fade"><p>與 Better（重義）聯絡：</p>
     <a href="https://better885.pse.is/Line2BetterHung" target="_blank">點此聯絡</a><br>
-    <img src="BetterQRCode.jpg" class="qr"><br><br>
-    <small>2026/01/15 Ver 2.6.5 (強效鎖定版)</small>
+    <img src="BetterQRCode.jpg" class="qr"><br>
+    <small>2026/01/15 Ver 2.6.5 (PowerNumber 穩定版)</small>
   </div>`;
 
     sendToBackstage(dob, n, traits, blessing);
