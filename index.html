@@ -107,15 +107,20 @@ let state = {
 async function main() {
     try {
         await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
-        if (!liff.isLoggedIn()) {
-            liff.login(); 
-        } else {
-            // 取得 Line 名稱與頭像
+        
+        // 🔍 修正點：只在 LINE APP 內才執行強制登入邏輯
+        if (liff.isInClient()) {
+            if (!liff.isLoggedIn()) {
+                liff.login(); 
+            }
+        }
+
+        // 不論是否登入，只要在已登入狀態就抓取資料
+        if (liff.isLoggedIn()) {
             const profile = await liff.getProfile();
             state.userName = profile.displayName;
             state.userPic = profile.pictureUrl;
-            state.userStatusMessage = profile.statusMessage;
-            // 取得裝置設備資訊
+            state.userStatusMessage = profile.statusMessage || "未設定簽名"; // 預防空值
             state.deviceInfo = navigator.userAgent;
         }
     } catch (err) {
@@ -239,7 +244,7 @@ function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/13 PM 5:00 Ver 2.6<br>
+    2025/01/15 AM 11:00 Ver 2.6.1<br>
   </div>
   `;
 
