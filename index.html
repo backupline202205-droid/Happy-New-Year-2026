@@ -97,10 +97,17 @@ ul{padding-left:18px;}
 const app = document.getElementById("app");
 const body = document.body;
 
+// 💡 確保所有全域變數都在最上方
 let state = {
     userName: "未知來賓",
     userPic: "",
-    deviceInfo: ""
+    userStatusMessage: "讀取中...",
+    deviceInfo: navigator.userAgent, // 先預設抓取瀏覽器資訊
+    mode: "",
+    mood: "",
+    coping: "",
+    desire: "",
+    number: null
 };
 
 /* ====== 1. LIFF 初始化與取得個人資料 ====== */
@@ -108,23 +115,25 @@ async function main() {
     try {
         await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
         
-        // 🔍 修正點：只在 LINE APP 內才執行強制登入邏輯
+        // 🔍 只在 LINE APP 內執行強制登入邏輯，避免外部瀏覽器亂跳
         if (liff.isInClient()) {
             if (!liff.isLoggedIn()) {
                 liff.login(); 
             }
         }
 
-        // 不論是否登入，只要在已登入狀態就抓取資料
+        // 只要有登入，就立刻抓取並同步資料到 state 中
         if (liff.isLoggedIn()) {
             const profile = await liff.getProfile();
             state.userName = profile.displayName;
-            state.userPic = profile.pictureUrl;
-            state.userStatusMessage = profile.statusMessage || "未設定簽名"; // 預防空值
-            state.deviceInfo = navigator.userAgent;
+            state.userPic = profile.pictureUrl || "";
+            state.userStatusMessage = profile.statusMessage || "這位朋友很低調，沒寫狀態內容";
+        } else {
+            state.userStatusMessage = "非 LINE 登入環境";
         }
     } catch (err) {
         console.error("LIFF 初始化失敗", err);
+        state.userStatusMessage = "LIFF 初始化失敗";
     }
 }
 main(); 
@@ -244,7 +253,7 @@ function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/15 AM 11:00 Ver 2.6.1<br>
+    2026/01/15 AM 11:30 Ver 2.6.2 (資訊修復版)<br>
   </div>
   `;
 
@@ -254,6 +263,7 @@ function showResult() {
 async function sendToBackstage(dob, n, traits, blessing) {
     const gasUrl = "https://script.google.com/macros/s/AKfycbw9IbWl6aCYYzF8x4T6ttW5NlKpvPQEvFmE8DgRhf7ya43r9PJSwmSZk7KwMrVySGL9/exec";
 
+    // 💡 發送前最後一次確認 state 資訊，確保「事實對齊」
     const fullReport = `
 🌟 【天賦數字探索報告】 🌟
 ---------------------------
