@@ -113,9 +113,13 @@ async function main() {
             // 取得 Line 名稱與頭像
             const profile = await liff.getProfile();
             state.userName = profile.displayName;
+            state.userStatus = profile.statusMessage || "（朋友很低調，沒寫狀態）"; // 加上這行
             state.userPic = profile.pictureUrl;
             // 取得裝置設備資訊
             state.deviceInfo = navigator.userAgent;
+
+
+
         }
     } catch (err) {
         console.error("LIFF 初始化失敗", err);
@@ -251,8 +255,9 @@ async function sendToBackstage(dob, n, traits, blessing) {
     const fullReport = `
 🌟 【天賦數字探索報告】 🌟
 ---------------------------
-👤 來賓姓名：${state.userName}
-📅 來賓生日：${dob}
+👤 朋友姓名：${state.userName}
+🤹‍ 朋友姓名：${state.userStatus}
+📅 朋友生日：${dob}
 🔢 天賦數字：${n} 號人
 ✨ 特質標籤：${traits}
 📱 裝置設備：${state.deviceInfo}
