@@ -105,29 +105,24 @@ let state = {
 
 /* ====== 1. LIFF 初始化與取得個人資料 ====== */
 async function main() {
-  try {
-    await liff.init({ liffId: "2008876179-yvn4oUyo" });
-    
-    // 💡 關鍵：只有在 LINE App 內才執行登入判斷
-    if (liff.isInClient()) {
-      if (!liff.isLoggedIn()) {
-        liff.login();
-        return;
-      }
+    try {
+        await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
+        
+        // 💡 邏輯非常簡單：只要沒登入，不管是誰、不管在哪開，通通去登入
+        if (!liff.isLoggedIn()) {
+            liff.login(); 
+            return; // 沒登入就停止往下跑，避免抓到「未知來賓」
+        }
+
+        // 走到這裡代表一定登入成功了
+        const profile = await liff.getProfile();
+        state.userName = profile.displayName;
+        state.userStatus = profile.statusMessage || "🌿";
+        state.userPic = profile.pictureUrl;
+        
+    } catch (err) {
+        console.error("初始化失敗", err);
     }
-    
-    // 只要有登入（不論是 LINE 內還是外部瀏覽器）就抓取資料
-    if (liff.isLoggedIn()) {
-      const profile = await liff.getProfile();
-      state.userName = profile.displayName;
-      state.userStatus = profile.statusMessage || "（這位朋友很低調 🌿）";
-      state.userPic = profile.pictureUrl;
-    } else {
-      state.userStatus = "非 LINE 登入環境";
-    }
-  } catch (err) {
-    console.error("LIFF 初始化失敗", err);
-  }
 }
 main(); 
 
