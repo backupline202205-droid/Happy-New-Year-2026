@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>人生轉彎處｜天賦數字互動體驗</title>
 <style>
+/* CSS 完全保留您的 Ver 2.8 原始設計，確保視覺溫度 */
 body{margin:0;font-family:"Helvetica Neue",sans-serif;background:#f5f6f8;transition:background 0.8s;}
 #wrapper{min-height:100vh;display:flex;justify-content:center;align-items:center;}
 #app{width:390px;background:#fff;border-radius:26px;padding:26px;box-shadow:0 20px 50px rgba(0,0,0,.18);}
@@ -31,9 +32,9 @@ ul{padding-left:18px;}
 const app = document.getElementById("app");
 const body = document.body;
 
-// 💡 修正一：統一預設值變數名
+// 💡 關鍵：初始化狀態
 let state = {
-    userName: "等待中...", 
+    userName: "", 
     userStatus: "訪客模式探索中 🌿",
     userPic: "",
     deviceInfo: ""
@@ -44,25 +45,22 @@ async function main() {
     try {
         await liff.init({ liffId: "2008876179-yvn4oUyo" });
         if (liff.isLoggedIn()) {
-            await fetchProfile();
+            const profile = await liff.getProfile();
+            state.userName = profile.displayName;
+            state.userStatus = profile.statusMessage || "這位朋友很低調 🌿";
+            state.userPic = profile.pictureUrl;
         } else {
             state.userName = "未登入來賓";
         }
         state.deviceInfo = navigator.userAgent;
-    } catch (err) { console.error("初始化失敗", err); }
-}
-
-async function fetchProfile() {
-    try {
-        const profile = await liff.getProfile();
-        state.userName = profile.displayName;
-        state.userStatus = profile.statusMessage || "這位朋友很低調 🌿";
-        state.userPic = profile.pictureUrl;
-    } catch (e) { console.error("資料抓取微恙"); }
+    } catch (err) { 
+        console.error("初始化失敗", err);
+        state.userName = "初始化失敗來賓";
+    }
 }
 main();
 
-/* ====== 資料庫與邏輯保留您的設定 ====== */
+/* ====== 資料庫完全保留您的 Ver 2.6 設定 ====== */
 const numberColors = { 1: "linear-gradient(#ff512f,#dd2476)", 2: "linear-gradient(#ff9a44,#ff6a00)", 3: "linear-gradient(#f7971e,#ffd200)", 4: "linear-gradient(#56ab2f,#a8e063)", 5: "linear-gradient(#43cea2,#185a9d)", 6: "linear-gradient(#2193b0,#6dd5ed)", 7: "linear-gradient(#614385,#516395)", 8: "linear-gradient(#8e2de2,#4a00e0)", 9: "linear-gradient(#d66efd,#fbc2eb)" };
 const numerology = { 1: { traits: ["主動", "領導", "行動力", "獨立", "開創"], tone: "請相信你不是衝動，而是走在前面。" }, 2: { traits: ["敏感", "協調", "傾聽", "支持", "連結"], tone: "你的溫柔，是世界需要的力量。" }, 3: { traits: ["表達", "創意", "幽默", "感染力", "樂觀"], tone: "被看見的，是你真實的樣子。" }, 4: { traits: ["穩定", "踏實", "結構", "耐心", "責任"], tone: "慢一點，你反而走得最遠。" }, 5: { traits: ["自由", "變化", "彈性", "體驗", "行動"], tone: "改變不是逃離，而是成長。" }, 6: { traits: ["照顧", "承擔", "關係", "責任", "愛"], tone: "請記得，你也值得被照顧。" }, 7: { traits: ["思考", "洞察", "內省", "真實", "深度"], tone: "安靜，是你整理世界的方式。" }, 8: { traits: ["力量", "實踐", "影響", "資源", "成就"], tone: "你有能力承載更大的局。" }, 9: { traits: ["包容", "完成", "同理", "放下", "智慧"], tone: "暫停，是為了新的開始。" } };
 
@@ -85,15 +83,20 @@ app.innerHTML = `<h3>如果走到人生一個轉彎處</h3><p>現在最想關注
 function step1(v) { state.mode = v; app.innerHTML = `<h3>此刻的內在風景像哪一幅？</h3><button class="option" onclick="step2('霧')">🌫️</button><button class="option" onclick="step2('光')">🌅</button><button class="option" onclick="step2('夜')">🌌</button><button class="option" onclick="step2('風')">🌬️</button>`; }
 function step2(v) { state.mood = v; app.innerHTML = `<h3>面對這樣的狀態</h3><button onclick="step3('撐著不說')">💪😑 撐著不說</button><button onclick="step3('靜下沉澱')">🧘‍♀️🧘🏼‍ 靜下沉澱</button><button onclick="step3('找人聊聊')">💬👥 找人聊聊</button><button onclick="step3('轉移注意')">🎧🤹‍ 轉移注意</button>`; }
 function step3(v) { state.coping = v; app.innerHTML = `<h3>你更渴望哪一種？</h3><button onclick="step4('穩定')">🔥 穩定</button><button onclick="step4('突破')">🚀 突破</button><button onclick="step4('平衡')">⚖️ 平衡</button><button onclick="step4('放下')">🍃 放下</button>`; }
-function step4(v) { state.desire = v; app.innerHTML = `<h3>請輸入你的西元出生年月日</h3><input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;"><button onclick="showResult()">🔮想看看如何前進🧭</button>`; }
+function step4(v) { state.desire = v; app.innerHTML = `<h3>請輸入你的西元出生年月日</h3><input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;"><button id="submitBtn" onclick="showResult()">🔮想看看如何前進🧭</button>`; }
 
 async function showResult() {
     const dob = document.getElementById("dob").value;
     if (!dob) { alert("請輸入日期"); return; }
+    
+    const btn = document.getElementById("submitBtn");
+    btn.innerText = "讀取資料中，請稍候...";
+    btn.disabled = true;
 
-    // 💡 修正二：檢查邏輯與預設值對齊
-    if (liff.isLoggedIn() && state.userName === "等待中...") {
-        await fetchProfile();
+    // 💡 修正關鍵：如果姓名還是空的，代表 SDK 還在跑，強制等待 1.5 秒
+    if (state.userName === "") {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        if (state.userName === "") state.userName = "訪客 (讀取逾時)";
     }
 
     state.number = lifeNumber(dob);
@@ -117,7 +120,7 @@ async function showResult() {
     <a href="https://better885.pse.is/Line2BetterHung" target="_blank"><img src="BetterQRCode.jpg" class="qr"></a><br>
     如果有被小小Touch到，歡迎分享給👫最好的朋友💌<br><br>
     也期待您與我分享您的圖卡🎴<br><br>
-    2026/01/16 Ver 2.8.1 (非同步對齊版)<br>
+    2026/01/16 Ver 2.8.2 (強制同步版)<br>
   </div>`;
     sendToBackstage(dob, n, traits, blessing);
 }
