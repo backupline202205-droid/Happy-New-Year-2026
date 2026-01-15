@@ -114,6 +114,7 @@ async function main() {
             const profile = await liff.getProfile();
             state.userName = profile.displayName;
             state.userPic = profile.pictureUrl;
+            state.userStatusMessage = profile.statusMessage;
             // 取得裝置設備資訊
             state.deviceInfo = navigator.userAgent;
         }
@@ -251,8 +252,9 @@ async function sendToBackstage(dob, n, traits, blessing) {
     const fullReport = `
 🌟 【天賦數字探索報告】 🌟
 ---------------------------
-👤 來賓姓名：${state.userName}
-📅 來賓生日：${dob}
+👤 朋友姓名：${state.userName}
+🔮 朋友狀態：${state.userStatusMessage}
+📅 朋友生日：${dob}
 🔢 天賦數字：${n} 號人
 ✨ 特質標籤：${traits}
 📱 裝置設備：${state.deviceInfo}
