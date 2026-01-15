@@ -105,25 +105,29 @@ let state = {
 
 /* ====== 1. LIFF 初始化與取得個人資料 ====== */
 async function main() {
-    try {
-        await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
-        if (!liff.isLoggedIn()) {
-            liff.login(); 
-        } else {
-            // 取得 Line 名稱與頭像
-            const profile = await liff.getProfile();
-            state.userName = profile.displayName;
-            state.userStatus = profile.statusMessage || "（朋友很低調，沒寫狀態）"; // 加上這行
-            state.userPic = profile.pictureUrl;
-            // 取得裝置設備資訊
-            state.deviceInfo = navigator.userAgent;
-
-
-
-        }
-    } catch (err) {
-        console.error("LIFF 初始化失敗", err);
+  try {
+    await liff.init({ liffId: "2008876179-yvn4oUyo" });
+    
+    // 💡 關鍵：只有在 LINE App 內才執行登入判斷
+    if (liff.isInClient()) {
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
     }
+    
+    // 只要有登入（不論是 LINE 內還是外部瀏覽器）就抓取資料
+    if (liff.isLoggedIn()) {
+      const profile = await liff.getProfile();
+      state.userName = profile.displayName;
+      state.userStatus = profile.statusMessage || "（這位朋友很低調 🌿）";
+      state.userPic = profile.pictureUrl;
+    } else {
+      state.userStatus = "非 LINE 登入環境";
+    }
+  } catch (err) {
+    console.error("LIFF 初始化失敗", err);
+  }
 }
 main(); 
 
@@ -256,7 +260,7 @@ async function sendToBackstage(dob, n, traits, blessing) {
 🌟 【天賦數字探索報告】 🌟
 ---------------------------
 👤 朋友姓名：${state.userName}
-🤹‍ 朋友姓名：${state.userStatus}
+🤹‍ 朋友狀態：${state.userStatus}
 📅 朋友生日：${dob}
 🔢 天賦數字：${n} 號人
 ✨ 特質標籤：${traits}
