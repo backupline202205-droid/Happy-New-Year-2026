@@ -102,6 +102,7 @@ let state = {
     userName: "尚未登入",
     userStatus: "狀態載入中",
     userPic: "",
+    from: "未知來源", // 💡 新增這行，預設值
     deviceInfo: navigator.userAgent
 };
 
@@ -114,11 +115,23 @@ async function fetchUserProfile() {
             state.userName = profile.displayName;
             state.userStatus = profile.statusMessage || "🌿";
             state.userPic = profile.pictureUrl;
-            return true; // 抓取成功
+     // 💡 核心：獲取環境資訊
+            const context = liff.getContext();
+            if (context) {
+                const typeMap = {
+                    'utou': '個人私訊',
+                    'group': '群組',
+                    'room': '聊天室',
+                    'none': '外部瀏覽器'
+                };
+                state.from = typeMap[context.type] || context.type;
+            } else {
+                state.from = "外部瀏覽器";
+            }
+            return true;
         }
     } catch (e) {
-        console.error("抓取 Profile 失敗", e);
-    }
+        console.error("抓取 Profile 失敗", e); }
     return false; // 抓取失敗
 }
 
@@ -321,7 +334,7 @@ async function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/16 PM 10:00 Ver 2.8.8<br>
+    2025/01/16 PM 11:50 Ver 2.9.0<br>
   </div>
   `;
 
@@ -336,6 +349,7 @@ async function sendToBackstage(dob, n, traits, blessing) {
 ---------------------------
 👤 朋友姓名：${state.userName}
 🤹‍ 朋友狀態：${state.userStatus}
+📍 玩家位置：${state.from}  // 💡 加上這行
 📅 朋友生日：${dob}
 🔢 天賦數字：${n} 號人
 ✨ 特質標籤：${traits}
