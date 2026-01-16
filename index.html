@@ -124,24 +124,44 @@ async function fetchUserProfile() {
 
 
 /* ====== 2. LIFF 初始化修正 ====== */
+/* ====== 2. main 函式修正：手動還原，防止格式錯誤 ====== */
 async function main() {
-    await liff.init({ liffId: "..." });
-    if (liff.isLoggedIn()) {
-        await fetchUserProfile();
-        
-        // 💡 動作 2：檢查是否有存下的測驗
-        const saved = localStorage.getItem("pendingResult");
-        if (saved) {
-            const data = JSON.parse(saved);
-            Object.assign(state, data); // 把資料還原到 state
-            localStorage.removeItem("pendingResult"); // 拿完就丟掉
-            showResult(); // ⚡ 直接跳到結果頁！
-        } else {
-            startApp(); // 正常流程
+    try {
+        await liff.init({ liffId: "2008876179-yvn4oUyo" });
+        if (liff.isLoggedIn()) {
+            await fetchUserProfile();
+            
+            const saved = localStorage.getItem("pendingResult");
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                // 💡 手動精確還原，不使用 Object.assign 以免帶入髒資料
+                state.mode = data.mode;
+                state.mood = data.mood;
+                state.coping = data.coping;
+                state.desire = data.desire;
+                
+                // 拿完就立刻清空筆記本
+                localStorage.removeItem("pendingResult");
+
+                // 💡 關鍵：我們直接手動呼叫計算邏輯，不要經過 showResult 的「生日檢查」
+                // 因為資料已經在筆記本裡了
+                completeProcessFromStorage(data.dob); 
+            } else {
+                startApp();
+            }
         }
-    }
+    } catch (err) { console.error(err); }
 }
+
 main();
+
+// 💡 新增一個小助手，專門處理「從記憶中恢復」的顯示
+function completeProcessFromStorage(dobValue) {
+    // 建立一個臨時的虛擬輸入框，好讓原本的 showResult 能抓到生日
+    app.innerHTML = `<input id="dob" type="hidden" value="${dobValue}">`;
+    showResult(); 
+}
 
 /* ====== 彩虹色對照 ====== */
 const numberColors = {
