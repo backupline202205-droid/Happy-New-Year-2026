@@ -106,23 +106,7 @@ let state = {
 };
 
 
-/* ====== 1. 現場抓取函式 (確保最新狀態) ====== */
-async function fetchUserProfile() {
-    try {
-        if (liff.isLoggedIn()) {
-            const profile = await liff.getProfile();
-            state.userName = profile.displayName;
-            state.userStatus = profile.statusMessage || "🌿";
-            state.userPic = profile.pictureUrl;
-            return true;
-        }
-    } catch (e) {
-        console.error("Profile Fetch Error:", e);
-    }
-    return false;
-}
-
-/* ====== 1. 統一抓取資料的函式 (新增) ====== */
+/* ====== 1. 統一抓取資料的函式 (新增,確保最新狀態) ====== */
 async function fetchUserProfile() {
     try {
         if (liff.isLoggedIn()) {
@@ -141,14 +125,20 @@ async function fetchUserProfile() {
 
 /* ====== 2. LIFF 初始化修正 ====== */
 async function main() {
-    try {
-        await liff.init({ liffId: "2008876179-yvn4oUyo" });
-        // 如果一進來就是登入狀態，先抓一次資料存入 state
-        if (liff.isLoggedIn()) {
-            await fetchUserProfile();
+    await liff.init({ liffId: "..." });
+    if (liff.isLoggedIn()) {
+        await fetchUserProfile();
+        
+        // 💡 動作 2：檢查是否有存下的測驗
+        const saved = localStorage.getItem("pendingResult");
+        if (saved) {
+            const data = JSON.parse(saved);
+            Object.assign(state, data); // 把資料還原到 state
+            localStorage.removeItem("pendingResult"); // 拿完就丟掉
+            showResult(); // ⚡ 直接跳到結果頁！
+        } else {
+            startApp(); // 正常流程
         }
-    } catch (err) { 
-        console.error("初始化失敗", err); 
     }
 }
 main();
@@ -246,20 +236,31 @@ async function showResult() {
         await fetchUserProfile();
     }
 
-    // 如果現場重抓還是失敗，才執行 3 次重試迴圈
+    // 如果現場重抓還是失敗，才執行 5 次重試迴圈
     let retryCount = 0;
-    while (state.userName === "尚未登入" && retryCount < 3) {
+    while (state.userName === "尚未登入" && retryCount < 5) {
         await fetchUserProfile(); 
         if (state.userName === "尚未登入") {
-            await new Promise(res => setTimeout(res, 300));
+            await new Promise(res => setTimeout(res, 400));
             retryCount++;
         }
     }
 
     // 【第三道鎖】最終保險：若真的徹底抓不到，才叫他重登
+    // 【第四道鎖】終極保險
     if (state.userName === "尚未登入") {
-        alert("身分驗證逾時，請點擊確定後重新登入 🌿");
-        liff.logout();
+        // 💡 動作 1：把目前測驗結果存起來
+        const saveSession = {
+            mode: state.mode,
+            mood: state.mood,
+            coping: state.coping,
+            desire: state.desire,
+            dob: dob // 剛輸入的生日
+        };
+        localStorage.setItem("pendingResult", JSON.stringify(saveSession));
+
+        alert("需登入以產出對您的回饋📝麻煩您囉🙂謝謝！🙏🏽");
+        liff.logout(); 
         liff.login(); 
         return; 
     }
@@ -300,7 +301,7 @@ async function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/16 PM 10:00 Ver 2.6.8<br>
+    2025/01/16 PM 10:00 Ver 2.8.8<br>
   </div>
   `;
 
