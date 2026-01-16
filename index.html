@@ -97,34 +97,24 @@ ul{padding-left:18px;}
 const app = document.getElementById("app");
 const body = document.body;
 
+// 💡 a. 將預設值設為明確的標記
 let state = {
-    userName: "未知來賓",
+    userName: "尚未登入",
+    userStatus: "狀態載入中",
     userPic: "",
-    deviceInfo: ""
+    deviceInfo: navigator.userAgent
 };
 
-/* ====== 1. LIFF 初始化與取得個人資料 ====== */
+
+/* ====== 1. LIFF 基礎初始化 ====== */
 async function main() {
     try {
-        await liff.init({ liffId: "2008876179-yvn4oUyo" }); 
-        
-        // 💡 邏輯非常簡單：只要沒登入，不管是誰、不管在哪開，通通去登入
-        if (!liff.isLoggedIn()) {
-            liff.login(); 
-            return; // 沒登入就停止往下跑，避免抓到「未知來賓」
-        }
-
-        // 走到這裡代表一定登入成功了
-        const profile = await liff.getProfile();
-        state.userName = profile.displayName;
-        state.userStatus = profile.statusMessage || "🌿";
-        state.userPic = profile.pictureUrl;
-        
-    } catch (err) {
-        console.error("初始化失敗", err);
-    }
+        await liff.init({ liffId: "2008876179-yvn4oUyo" });
+        // 初始化時不強迫登入，保持流暢
+    } catch (err) { console.error("初始化失敗", err); }
 }
-main(); 
+main();
+
 
 /* ====== 彩虹色對照 ====== */
 const numberColors = {
@@ -202,9 +192,44 @@ function step4(v) { state.desire = v; app.innerHTML = `
 <input id="dob" type="date" style="width:100%;padding:10px;border-radius:12px;">
 <button onclick="showResult()">🔮想看看如何前進🧭</button>`; }
 
-function showResult() {
+
+/* ====== 2. 輸出前抓取與檢查 (核心修改區) ====== */
+
+async function showResult() {
     const dob = document.getElementById("dob").value;
     if (!dob) { alert("請輸入日期"); return; }
+
+    // 【第一道鎖】完全沒登入，直接引導登入
+    if (!liff.isLoggedIn()) {
+        liff.login(); 
+        return; 
+    }
+
+    // 【第二道鎖】已登入但資料還是預設值，執行重試
+    let retryCount = 0;
+    while (state.userName === "尚未登入" && retryCount < 3) {
+        try {
+            const profile = await liff.getProfile();
+            state.userName = profile.displayName;
+            state.userStatus = profile.statusMessage || "🌿";
+        } catch (e) {
+            console.log("嘗試抓取身分中...");
+        }
+        if (state.userName === "尚未登入") {
+            await new Promise(res => setTimeout(res, 300));
+            retryCount++;
+        }
+    }
+
+    // 【第三道鎖】核心修正：若重試 3 次依然是 "尚未登入"
+    if (state.userName === "尚未登入") {
+        // 💡 物理防呆：告訴玩家原因，點下確定後直接執行登入
+        alert("身分驗證逾時，請重新登入以獲取您的個人化報告 🌿");
+        liff.login(); 
+        return; 
+    }
+
+
     state.number = lifeNumber(dob);
     const n = state.number;
     const color = numberColors[n];
@@ -241,7 +266,7 @@ function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/13 PM 5:00 Ver 2.6<br>
+    2025/01/16 PM 10:00 Ver 2.6.8<br>
   </div>
   `;
 
