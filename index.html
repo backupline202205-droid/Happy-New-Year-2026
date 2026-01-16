@@ -106,6 +106,22 @@ let state = {
 };
 
 
+/* ====== 1. 現場抓取函式 (確保最新狀態) ====== */
+async function fetchUserProfile() {
+    try {
+        if (liff.isLoggedIn()) {
+            const profile = await liff.getProfile();
+            state.userName = profile.displayName;
+            state.userStatus = profile.statusMessage || "🌿";
+            state.userPic = profile.pictureUrl;
+            return true;
+        }
+    } catch (e) {
+        console.error("Profile Fetch Error:", e);
+    }
+    return false;
+}
+
 /* ====== 1. 統一抓取資料的函式 (新增) ====== */
 async function fetchUserProfile() {
     try {
@@ -214,7 +230,7 @@ function step4(v) { state.desire = v; app.innerHTML = `
 <button onclick="showResult()">🔮想看看如何前進🧭</button>`; }
 
 
-/* ====== 3. showResult 核心修正 ====== */
+/* ====== 3. showResult 核心修正 (請確保括弧成對) ====== */
 async function showResult() {
     const dob = document.getElementById("dob").value;
     if (!dob) { alert("請輸入日期"); return; }
@@ -222,7 +238,7 @@ async function showResult() {
     // 【第一道鎖】檢查登入狀態
     if (!liff.isLoggedIn()) {
         liff.login();
-        return;
+        return; 
     }
 
     // 【第二道鎖】即使登入，若 state 還是預設值，現場重抓一次
@@ -230,7 +246,7 @@ async function showResult() {
         await fetchUserProfile();
     }
 
-    // 如果現場重抓還是失敗，才進入您的重試迴圈
+    // 如果現場重抓還是失敗，才執行 3 次重試迴圈
     let retryCount = 0;
     while (state.userName === "尚未登入" && retryCount < 3) {
         await fetchUserProfile(); 
@@ -243,6 +259,7 @@ async function showResult() {
     // 【第三道鎖】最終保險：若真的徹底抓不到，才叫他重登
     if (state.userName === "尚未登入") {
         alert("身分驗證逾時，請點擊確定後重新登入 🌿");
+        liff.logout();
         liff.login(); 
         return; 
     }
