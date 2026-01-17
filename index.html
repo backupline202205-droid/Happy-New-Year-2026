@@ -20,50 +20,18 @@ body{
   align-items:center;
 }
 
-
 #app {
-  /* 1. 寬度大氣化：筆電與平板螢幕大，寬度放開到 800px，利用率立刻提升 */
- /* width: 95%; */
-  width: calc(100% - 40px);
-  max-width: 800px; 
-  
-  /* 2. 減少滑動：將高度限制放寬到 98vh，幾乎貼近螢幕邊緣，確保一畫面呈現完 */
-  max-height: 98vh; 
-  
-  overflow-y: auto;
+  width: 92%;
+  max-width: 500px;
+  max-height: 95vh;         /* 💡 統一使用 95vh：橫式時利用率最高 */
+  overflow-y: auto;         /* 💡 確保內容長度超過螢幕時可以滑動 */
   background: #fff;
   border-radius: 26px;
-  
-  /* 3. 解決壓框與置中 */
-  padding: 40px; 
-  text-align: center; 
-  
+  padding: 24px;            /* 💡 增加內距，防止文字壓邊 */
   box-shadow: 0 20px 50px rgba(0,0,0,.18);
-  box-sizing: border-box; 
-  margin: 10px auto; /* 減少 margin，爭取更多垂直空間 */
+  box-sizing: border-box; /* 💡 確保 padding 不會撐破寬度，解決壓框 */
+  margin: 10px auto;
 }
-
-
-/* 2. 在手機版適度放開寬度，解決壓框 */
-@media screen and (max-width: 480px) {
- #app {
-       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
-      }
-      }
-
-
-/* 4. 針對筆電/平板的大螢幕優化：讓 2x2 矩陣更寬，視覺更開闊 */
-@media screen and (min-width: 768px) {
-  .options-container {
-    gap: 20px; /* 增加按鈕間距，大螢幕看起來更專業 */
-  }
-  button {
-    padding: 24px 10px; /* 增加按鈕高度，讓大螢幕不再小家子氣 */
-  }
-}
-
-
-
 
 /* 💡 選項按鈕容器：改為 2x2 矩陣排列 */
 .options-container {
@@ -86,22 +54,13 @@ button {
   align-items: center;
 }
 
-// h3 {
-//  margin-top: 0;
-//  font-size: 1.4rem;   /* 統一標題字級 */
-//  color: #333;
-//  margin-bottom: 15px;
-// }
 
-/* 4. 優化標題與段落的行高，防止文字擁擠 */
 h3 {
   margin-top: 0;
+  font-size: 1.4rem;   /* 統一標題字級 */
   color: #333;
-  line-height: 1.5; /* 增加行距，視覺更舒展 */
-  margin-bottom: 20px;
-  word-break: keep-all;
+  margin-bottom: 15px;
 }
-
 
 
 button:hover{background:#e3edff;}
@@ -141,10 +100,18 @@ button:hover{background:#e3edff;}
   padding: 0 5px;                /* 給文字一點內縮呼吸 */
 }
 
-p {
-  line-height: 1.6;
-  color: #555;
-}
+
+// .card {
+//  width: 100%;         /* 💡 寬度撐滿父容器，解決太小的問題 */
+//  max-width: 100%;     /* 確保不超過容器 */
+//  height: auto;        /* 💡 高度隨比例自動調整 */
+//  border-radius: 18px; /* 縮小圓角，避免切到邊緣文字 */
+//  display: block;
+//  margin: 15px 0;      /* * 增加上下間距，讓它呼吸 */
+//  box-shadow: 0 15px 40px rgba(0,0,0,.25); /* 💡 保留您最愛的立體陰影,增加陰影，讓圖卡有立體感 */
+// // box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+//  animation: fadeIn 1s ease;               /* 💡 保留您要求的緩緩浮現,讓圖卡緩緩浮現，更有質感 */
+// }
 
 
 .card {
@@ -152,9 +119,7 @@ p {
   max-width: 100%;
   height: auto;
   border-radius: 18px;
-//  display: block;
   box-shadow: 0 15px 40px rgba(0,0,0,.25);
-// box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   animation: fadeIn 1s ease;
   margin: 15px 0;
 }
@@ -183,34 +148,14 @@ p {
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
-// .end-section{
-//  margin-top:16px;
-//  background:linear-gradient(#f6d365,#fda085);
-//  border-radius:18px;
-//  padding:16px;
-//  text-align:center;
-//  color:#5a3e00;
-// }
-
-/* 1. 確保結果頁底部完全置中，解決 QRCode 歪斜 */
-.end-section {
-  margin-top: 16px;
-  background: linear-gradient(#f6d365, #fda085);
-  border-radius: 18px;
-  padding: 20px;
-  display: block; 
-  text-align: center; /* 確保這裡也有置中 */
-  color: #5a3e00;
+.end-section{
+  margin-top:16px;
+  background:linear-gradient(#f6d365,#fda085);
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+  color:#5a3e00;
 }
-
-/* 2. 在手機版適度放開寬度，解決壓框 */
-//@media screen and (max-width: 480px) {
-//  #app {
-//    padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
-//  }
-// }
-
-
 .end-section a{
   color:#5a3e00;
   font-weight:bold;
@@ -362,6 +307,15 @@ function lifeNumber(dob) {
     return sum;
 }
 
+/* ====== 流程起始 ====== */
+// app.innerHTML = `
+// <h3>如果走到人生一個轉彎處</h3>
+// <p>現在最想關注哪個面向？</p>
+// <button onclick="step1('工作')">🧳 工作 / 事業</button>
+// <button onclick="step1('家庭')">🏠 家庭 / 關係</button>
+// <button onclick="step1('決策')">🧭 重大決策</button>
+// <button onclick="step1('自我')">🌱 自我狀態</button>
+// `;
 
 // 💡 1. 初始畫面 (請找到這一區塊覆蓋)
 app.innerHTML = `
@@ -376,6 +330,14 @@ app.innerHTML = `
   </div>
 </div>
 `;
+
+// function step1(v) { state.mode = v; app.innerHTML = `
+// <h3>此刻的內在風景像哪一幅？</h3>
+// <button class="option" onclick="step2('霧')">🌫️</button>
+// <button class="option" onclick="step2('光')">🌅</button>
+// <button class="option" onclick="step2('夜')">🌌</button>
+// <button class="option" onclick="step2('風')">🌬️</button>`; }
+
 
 // 💡 2. step1 函式
 function step1(v) { 
@@ -393,6 +355,14 @@ function step1(v) {
 }
 
 
+// function step2(v) { state.mood = v; app.innerHTML = `
+// <h3>面對這樣的狀態</h3>
+// <button onclick="step3('撐著不說')">💪😑 撐著不說</button>
+// <button onclick="step3('靜下沉澱')">🧘‍♀️🧘🏼‍ 靜下沉澱</button>
+// <button onclick="step3('找人聊聊')">💬👥 找人聊聊</button>
+// <button onclick="step3('轉移注意')">🎧🤹‍ 轉移注意</button>`; }
+
+
 // 💡 3. step2 函式
 function step2(v) { 
   state.mood = v; 
@@ -408,6 +378,13 @@ function step2(v) {
   </div>`; 
 }
 
+
+// function step3(v) { state.coping = v; app.innerHTML = `
+// <h3>你更渴望哪一種？</h3>
+// <button onclick="step4('穩定')">🔥 穩定</button>
+// <button onclick="step4('突破')">🚀 突破</button>
+// <button onclick="step4('平衡')">⚖️ 平衡</button>
+// <button onclick="step4('放下')">🍃 放下</button>`; }
 
 // 💡 4. step3 函式
 function step3(v) { 
@@ -499,31 +476,19 @@ async function showResult() {
     <p>期待有機會聊聊，<br>
     點擊連結或掃描 QRCode<br>
     即可與 Better（重義）聯絡：</p>
-  </div>
-
-// 請將您的代碼改為這樣：
-<div style="text-align: center;">
-  <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
-    https://better885.pse.is/Line2BetterHung
-  </a>
-</div>
-
-<div style="text-align: center;">
-  <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
-    <img src="BetterQRCode.jpg" class="qr">
-  </a>
-</div>
-
-
-
-
+    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
+      https://better885.pse.is/Line2BetterHung
+    </a>
+    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
+      <img src="BetterQRCode.jpg" class="qr">
+    </a>
 <br>
     如果有被小小Touch到，歡迎分享給👫最好的朋友💌<br>
 <br>
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/17 PM 07:00 Ver 3.1.8<br>
+    2025/01/17 PM 02:25 Ver 3.1.2<br>
   </div>
   `;
 
