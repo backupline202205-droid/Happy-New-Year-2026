@@ -27,7 +27,7 @@ body{
 //  max-width: 1600px; 
 
   height: calc(100% - 16px);
-  max-height: 256px; 
+  max-height: 512 px; 
  
   
   /* 2. 減少滑動：將高度限制放寬到 98vh，幾乎貼近螢幕邊緣，確保一畫面呈現完 */
@@ -46,6 +46,21 @@ body{
   margin: 8px auto; /* 減少 margin，爭取更多垂直空間 */
 }
 
+@media screen and (min-height: 480px) {
+ #app {
+      background-color: purple
+      }
+      }
+
+
+@media screen and (max-width: 480px) {
+ #app {
+       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
+      }
+      }
+
+
+
 
 /* 2. 在手機版適度放開寬度，解決壓框 */
 @media screen and (max-width: 480px) {
@@ -53,6 +68,9 @@ body{
        padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
       }
       }
+
+
+
 
 
 /* 4. 針對筆電/平板的大螢幕優化：讓 2x2 矩陣更寬，視覺更開闊 */
