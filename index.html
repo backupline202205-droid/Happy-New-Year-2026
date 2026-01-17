@@ -13,85 +13,54 @@ body{
   background:#f5f6f8;
   transition:background 0.8s;
 }
-
 #wrapper{
-  min-height:100dvh;
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
 
-
-
 #app {
   /* 1. 寬度大氣化：筆電與平板螢幕大，寬度放開到 800px，利用率立刻提升 */
- // width: calc(100% - 16px);
-//  max-width: 1600px; 
-
-  width: calc(100% - 16px);
-  height: 84%;
-
- 
+ /* width: 95%; */
+  width: calc(100% - 40px);
+  max-width: 800px; 
   
   /* 2. 減少滑動：將高度限制放寬到 98vh，幾乎貼近螢幕邊緣，確保一畫面呈現完 */
-//  max-height: 98vh; 
+  max-height: 98vh; 
   
   overflow-y: auto;
   background: #fff;
   border-radius: 26px;
   
   /* 3. 解決壓框與置中 */
-  padding: 32px; 
+  padding: 40px; 
   text-align: center; 
   
-  box-shadow: 0 32px 64px rgba(0,0,0,.18);
+  box-shadow: 0 20px 50px rgba(0,0,0,.18);
   box-sizing: border-box; 
-  margin: 8px auto; /* 減少 margin，爭取更多垂直空間 */
+  margin: 10px auto; /* 減少 margin，爭取更多垂直空間 */
 }
-
-@media screen and (max-aspect-ratio: 1)
-{
-background-color: lightgreen;
-}
-
-@media screen and (min-aspect-ratio: 1.01)
-{
-background-color: lightblue;
-}
-
-
-
-
-// @media screen and (max-width: 480px) {
-// #app {
-//       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
-//      }
-//      }
-
-
 
 
 /* 2. 在手機版適度放開寬度，解決壓框 */
-// @media screen and (max-width: 480px) {
- // #app {
-//       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
-//      }
-//      }
-
-
-
+@media screen and (max-width: 480px) {
+ #app {
+       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
+      }
+      }
 
 
 /* 4. 針對筆電/平板的大螢幕優化：讓 2x2 矩陣更寬，視覺更開闊 */
-// @media screen and (min-width: 1024px) {
-//  .options-container {
-//    gap: 20px; /* 增加按鈕間距，大螢幕看起來更專業 */
-//  }
-//  button {
-//    padding: 24px 10px; /* 增加按鈕高度，讓大螢幕不再小家子氣 */
-//  } 
-// }
+@media screen and (min-width: 768px) {
+  .options-container {
+    gap: 20px; /* 增加按鈕間距，大螢幕看起來更專業 */
+  }
+  button {
+    padding: 24px 10px; /* 增加按鈕高度，讓大螢幕不再小家子氣 */
+  }
+}
 
 
 
@@ -139,7 +108,7 @@ button:hover{background:#e3edff;}
 // .option{font-size:26px;}
 /* 💡 放大表情貼：讓情緒張力變強 */
 .option {
-  font-size: 64px !important;    /* 讓表情貼看起來像圖檔一樣大 */
+  font-size: 48px !important;    /* 讓表情貼看起來像圖檔一樣大 */
   margin-bottom: 8px;
   display: block;
 }
@@ -153,6 +122,14 @@ button:hover{background:#e3edff;}
 }
 
 
+
+/* 💡 針對結果頁第一段標題文字調大，增加存在感 */
+// .fade h3 {
+//  font-size: 1.5rem;   /* 再大一點，更有震撼力 */
+//  line-height: 1.4;
+//  margin-bottom: 12px;
+//  color: #333;
+// }
 
 /* 💡 針對結果頁第一段標題文字調大，增加存在感 */
 /* 💡 解決結果頁標題壓框 */
@@ -175,8 +152,9 @@ p {
   max-width: 100%;
   height: auto;
   border-radius: 18px;
-  display: block;
+//  display: block;
   box-shadow: 0 15px 40px rgba(0,0,0,.25);
+// box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   animation: fadeIn 1s ease;
   margin: 15px 0;
 }
@@ -490,6 +468,7 @@ async function showResult() {
             dob: dob // 剛輸入的生日
         };
         localStorage.setItem("pendingResult", JSON.stringify(saveSession));
+
         alert("需登入以產出對您的回饋📝麻煩您囉🙂謝謝！🙏🏽");
         liff.logout(); 
         liff.login(); 
@@ -500,11 +479,12 @@ async function showResult() {
     const n = state.number;
     const color = numberColors[n];
     body.style.background = color;
+
     const traits = numerology[n].traits.join("、"); 
     const blessing = dynamicMessage(state, n); 
     const fileName = `N0${n}C.png`;
 
-app.innerHTML = `
+    app.innerHTML = `
   <div class="card" style="background:${color}">
     <h3 class="fade">你的專屬天賦數字是 ${n}</h3>
     <ul class="fade">${numerology[n].traits.map(t => `<li>${t}</li>`).join("")}</ul>
@@ -521,26 +501,32 @@ app.innerHTML = `
     即可與 Better（重義）聯絡：</p>
   </div>
 
-  <div style="text-align: center;">
+// 請將您的代碼改為這樣：
+<div style="text-align: center;">
   <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
     https://better885.pse.is/Line2BetterHung
   </a>
-  </div>
+</div>
 
-  <div style="text-align: center;">
+<div style="text-align: center;">
   <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
     <img src="BetterQRCode.jpg" class="qr">
   </a>
-  </div>
+</div>
+
+
+
+
 <br>
     如果有被小小Touch到，歡迎分享給👫最好的朋友💌<br>
 <br>
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/17 PM 08:30 Ver 3.2.0<br>
+    2025/01/17 PM 07:00 Ver 3.1.8<br>
   </div>
   `;
+
     sendToBackstage(dob, n, traits, blessing);
 }
 
