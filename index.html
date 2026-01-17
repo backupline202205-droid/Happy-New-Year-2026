@@ -22,7 +22,8 @@ body{
 
 
 #app {
-  width: 92%;
+//  width: 92%;
+  width: calc(100% - 40px);
   /* 1. 擴大格局：從 500px 提升至 650px，讓平板與筆電不再顯得小家子氣 */
   max-width: 650px; 
   
@@ -34,12 +35,13 @@ body{
   border-radius: 26px;
   
   /* 3. 徹底解決壓框：增加內距，給文字更多呼吸空間 */
-  padding: 32px; 
-  
+  padding: 40px; 
   box-shadow: 0 20px 50px rgba(0,0,0,.18);
   box-sizing: border-box; /* 💡 確保 padding 不會撐破寬度，解決壓框 */
-
   margin: 20px auto;
+  text-align: center;
+  
+
 }
 
 /* 💡 選項按鈕容器：改為 2x2 矩陣排列 */
@@ -76,6 +78,7 @@ h3 {
   color: #333;
   line-height: 1.5; /* 增加行距，視覺更舒展 */
   margin-bottom: 20px;
+  word-break: keep-all;
 }
 
 
@@ -159,14 +162,34 @@ p {
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
-.end-section{
-  margin-top:16px;
-  background:linear-gradient(#f6d365,#fda085);
-  border-radius:18px;
-  padding:16px;
-  text-align:center;
-  color:#5a3e00;
+// .end-section{
+//  margin-top:16px;
+//  background:linear-gradient(#f6d365,#fda085);
+//  border-radius:18px;
+//  padding:16px;
+//  text-align:center;
+//  color:#5a3e00;
+// }
+
+/* 1. 確保結果頁底部完全置中，解決 QRCode 歪斜 */
+.end-section {
+  margin-top: 16px;
+  background: linear-gradient(#f6d365, #fda085);
+  border-radius: 18px;
+  padding: 20px;
+  display: block; 
+  text-align: center; /* 確保這裡也有置中 */
+  color: #5a3e00;
 }
+
+/* 2. 在手機版適度放開寬度，解決壓框 */
+@media screen and (max-width: 480px) {
+  #app {
+    padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
+  }
+}
+
+
 .end-section a{
   color:#5a3e00;
   font-weight:bold;
