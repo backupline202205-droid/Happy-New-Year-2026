@@ -22,27 +22,48 @@ body{
 
 
 #app {
-//  width: 92%;
+  /* 1. 寬度大氣化：筆電與平板螢幕大，寬度放開到 800px，利用率立刻提升 */
+ /* width: 95%; */
   width: calc(100% - 40px);
-  /* 1. 擴大格局：從 500px 提升至 650px，讓平板與筆電不再顯得小家子氣 */
   max-width: 800px; 
   
-  /* 2. 垂直適應：在大螢幕上留出更多上下空間 */
-  max-height: 90vh;  /* 💡 統一使用 95vh：橫式時利用率最高 */
+  /* 2. 減少滑動：將高度限制放寬到 98vh，幾乎貼近螢幕邊緣，確保一畫面呈現完 */
+  max-height: 98vh; 
   
-  overflow-y: auto;  /* 💡 確保內容長度超過螢幕時可以滑動 */
+  overflow-y: auto;
   background: #fff;
   border-radius: 26px;
   
-  /* 3. 徹底解決壓框：增加內距，給文字更多呼吸空間 */
+  /* 3. 解決壓框與置中 */
   padding: 40px; 
-  box-shadow: 0 20px 50px rgba(0,0,0,.18);
-  box-sizing: border-box; /* 💡 確保 padding 不會撐破寬度，解決壓框 */
-  margin: 20px auto;
-  text-align: center;
+  text-align: center; 
   
-
+  box-shadow: 0 20px 50px rgba(0,0,0,.18);
+  box-sizing: border-box; 
+  margin: 10px auto; /* 減少 margin，爭取更多垂直空間 */
 }
+
+
+/* 2. 在手機版適度放開寬度，解決壓框 */
+@media screen and (max-width: 480px) {
+ #app {
+       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
+      }
+      }
+
+
+/* 4. 針對筆電/平板的大螢幕優化：讓 2x2 矩陣更寬，視覺更開闊 */
+@media screen and (min-width: 768px) {
+  .options-container {
+    gap: 20px; /* 增加按鈕間距，大螢幕看起來更專業 */
+  }
+  button {
+    padding: 24px 10px; /* 增加按鈕高度，讓大螢幕不再小家子氣 */
+  }
+}
+
+
+
 
 /* 💡 選項按鈕容器：改為 2x2 矩陣排列 */
 .options-container {
@@ -183,11 +204,11 @@ p {
 }
 
 /* 2. 在手機版適度放開寬度，解決壓框 */
-@media screen and (max-width: 480px) {
-  #app {
-    padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
-  }
-}
+//@media screen and (max-width: 480px) {
+//  #app {
+//    padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
+//  }
+// }
 
 
 .end-section a{
@@ -478,12 +499,7 @@ async function showResult() {
     <p>期待有機會聊聊，<br>
     點擊連結或掃描 QRCode<br>
     即可與 Better（重義）聯絡：</p>
-//    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
-//      https://better885.pse.is/Line2BetterHung
-//    </a>
-//    <a href="https://better885.pse.is/Line2BetterHung" target="_blank">
-//      <img src="BetterQRCode.jpg" class="qr">
-//    </a>
+  </div>
 
 // 請將您的代碼改為這樣：
 <div style="text-align: center;">
@@ -507,7 +523,7 @@ async function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/17 PM 06:20 Ver 3.1.6<br>
+    2025/01/17 PM 07:00 Ver 3.1.8<br>
   </div>
   `;
 
