@@ -47,14 +47,14 @@ body{
   margin: 8px auto; /* 減少 margin，爭取更多垂直空間 */
 }
 
-@media screen and (min-width: 512px) {
+@media screen and (min-aspect-ratio: 1) {
  #app {
       background-color: orange
       width: 512 px; 
       }
       }
 
-@media screen and (min--width: 768px) {
+@media screen and (min-aspect-ratio: 0.99) {
  #app {
       background-color: purple
       width: 512 px;
@@ -64,35 +64,35 @@ body{
 
 
 
-@media screen and (max-width: 480px) {
- #app {
-       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
-      }
-      }
+// @media screen and (max-width: 480px) {
+// #app {
+//       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
+//      }
+//      }
 
 
 
 
 /* 2. 在手機版適度放開寬度，解決壓框 */
-@media screen and (max-width: 480px) {
- #app {
-       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
-      }
-      }
+// @media screen and (max-width: 480px) {
+ // #app {
+//       padding: 24px; /* 手機版不需要 40px 那麼大，24px 就能保證不壓框且留出空間 */
+//      }
+//      }
 
 
 
 
 
 /* 4. 針對筆電/平板的大螢幕優化：讓 2x2 矩陣更寬，視覺更開闊 */
-@media screen and (min-width: 1024px) {
-  .options-container {
-    gap: 20px; /* 增加按鈕間距，大螢幕看起來更專業 */
-  }
-  button {
-    padding: 24px 10px; /* 增加按鈕高度，讓大螢幕不再小家子氣 */
-  }
-}
+// @media screen and (min-width: 1024px) {
+//  .options-container {
+//    gap: 20px; /* 增加按鈕間距，大螢幕看起來更專業 */
+//  }
+//  button {
+//    padding: 24px 10px; /* 增加按鈕高度，讓大螢幕不再小家子氣 */
+//  } 
+// }
 
 
 
