@@ -24,7 +24,7 @@ body{
 
 #app {
   /* 1. 寬度大氣化：筆電與平板螢幕大，寬度放開到 800px，利用率立刻提升 */
-  min-height: 640px;
+  min-height: calc(80%-32px) ;
   width: auto;
 //  max-width: 800px; 
   
@@ -61,6 +61,16 @@ body{
   button {
     padding: 24px 10px; /* 增加按鈕高度，讓大螢幕不再小家子氣 */
   }
+}
+
+@media screen and (max-aspect-ratio: 1)
+{
+#app { background-color: lightgreen; }
+}
+
+@media screen and (min-aspect-ratio: 1.01)
+{
+#app {background-color: lightblue; }
 }
 
 
