@@ -26,7 +26,7 @@ body{
   /* 1. 寬度大氣化：筆電與平板螢幕大，寬度放開到 800px，利用率立刻提升 */
   min-height: calc(80%-32px) ;
   width: auto;
-//  max-width: 800px; 
+  max-width: 640px; 
   
   /* 2. 減少滑動：將高度限制放寬到 98vh，幾乎貼近螢幕邊緣，確保一畫面呈現完 */
 //  max-height: 98vh; 
@@ -65,12 +65,25 @@ body{
 
 @media screen and (max-aspect-ratio: 1)
 {
-#app { background-color: lightgreen; }
+#app { 
+      background-color: lightgreen;
+      min-width: calc(90%-32px) ;
+      height: auto;
+      max-width: 1200px; 
+     }
 }
 
 @media screen and (min-aspect-ratio: 1.01)
 {
-#app {background-color: lightblue; }
+#app {
+      background-color: lightblue;
+      min-height: calc(90%-32px) ;
+      width: auto;
+      max-height: 640px; 
+
+     }
+
+
 }
 
 
