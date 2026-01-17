@@ -47,14 +47,14 @@ body{
   margin: 8px auto; /* 減少 margin，爭取更多垂直空間 */
 }
 
-@media screen and (min-aspect-ratio: 1) {
+@media screen and (max-aspect-ratio: 1) {
  #app {
       background-color: orange
       width: 512 px; 
       }
       }
 
-@media screen and (min-aspect-ratio: 0.99) {
+@media screen and (min-aspect-ratio: 1.01 ) {
  #app {
       background-color: purple
       width: 512 px;
