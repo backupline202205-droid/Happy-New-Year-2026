@@ -46,12 +46,21 @@ body{
   margin: 8px auto; /* 減少 margin，爭取更多垂直空間 */
 }
 
-@media screen and (min-height: 1024px) {
+@media screen and (min-height: 512px) {
+ #app {
+      background-color: orange
+      max-height: 512 px; 
+      }
+      }
+
+@media screen and (min-height: 768px) {
  #app {
       background-color: purple
-      max-height: 1024 px; 
+      max-height: 768 px; 
       }
       }
+
+
 
 
 @media screen and (max-width: 480px) {
