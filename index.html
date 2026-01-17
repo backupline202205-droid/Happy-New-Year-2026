@@ -23,34 +23,37 @@ body{
 #app {
   width: 92%;
   max-width: 500px;
-  max-height: 95vh;     /* 💡 統一使用 95vh：橫式時利用率最高 */
-  overflow-y: auto;     /* 💡 確保內容長度超過螢幕時可以滑動 */
+  max-height: 95vh;         /* 💡 統一使用 95vh：橫式時利用率最高 */
+  overflow-y: auto;         /* 💡 確保內容長度超過螢幕時可以滑動 */
   background: #fff;
   border-radius: 26px;
-  padding: 24px;        /* 💡 增加內距，防止文字壓邊 */
+  padding: 24px;            /* 💡 增加內距，防止文字壓邊 */
   box-shadow: 0 20px 50px rgba(0,0,0,.18);
+  box-sizing: border-box; /* 💡 確保 padding 不會撐破寬度，解決壓框 */
+  margin: 10px auto;
 }
 
+/* 💡 選項按鈕容器：改為 2x2 矩陣排列 */
+.options-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 兩欄平分 */
+  gap: 12px;                      /* 按鈕間距 */
+  margin-top: 20px;
+}
 
+button {
+  width: 100%;
+  padding: 16px 8px;              /* 增加高度 */
+  border-radius: 16px;
+  border: none;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-/* 針對圖卡上方的標題 */
-// #app h3 {
-//  font-size: 1.3rem;
-//  color: #333;
-//  margin-bottom: 15px;
-// }
-
-// h3{margin-top:0;}
-// button{
-//  width:100%;
-//  padding:12px;
-//  margin:8px 0;
-//  border-radius:14px;
-//  border:none;
-//  font-size:16px;
-//  cursor:pointer;
-//  background:#f0f0f0;
-// }
 
 h3 {
   margin-top: 0;
@@ -61,29 +64,69 @@ h3 {
 
 
 button:hover{background:#e3edff;}
-.option{font-size:26px;}
-.small{font-size:13px;color:#666;}
+// .option{font-size:26px;}
+/* 💡 放大表情貼：讓情緒張力變強 */
+.option {
+  font-size: 48px !important;    /* 讓表情貼看起來像圖檔一樣大 */
+  margin-bottom: 8px;
+  display: block;
+}
+
+
+// .small{font-size:13px;color:#666;}
+.small {
+  font-size: 14px;
+  color: #555;
+  font-weight: bold;
+}
+
+
 
 /* 💡 針對結果頁第一段標題文字調大，增加存在感 */
+// .fade h3 {
+//  font-size: 1.5rem;   /* 再大一點，更有震撼力 */
+//  line-height: 1.4;
+//  margin-bottom: 12px;
+//  color: #333;
+// }
+
+/* 💡 針對結果頁第一段標題文字調大，增加存在感 */
+/* 💡 解決結果頁標題壓框 */
 .fade h3 {
-  font-size: 1.5rem;   /* 再大一點，更有震撼力 */
+  font-size: 1.5rem; /* 再大一點，更有震撼力 */
   line-height: 1.4;
-  margin-bottom: 12px;
+  margin: 0 0 15px 0;
   color: #333;
+  padding: 0 5px;                /* 給文字一點內縮呼吸 */
 }
+
+
+// .card {
+//  width: 100%;         /* 💡 寬度撐滿父容器，解決太小的問題 */
+//  max-width: 100%;     /* 確保不超過容器 */
+//  height: auto;        /* 💡 高度隨比例自動調整 */
+//  border-radius: 18px; /* 縮小圓角，避免切到邊緣文字 */
+//  display: block;
+//  margin: 15px 0;      /* * 增加上下間距，讓它呼吸 */
+//  box-shadow: 0 15px 40px rgba(0,0,0,.25); /* 💡 保留您最愛的立體陰影,增加陰影，讓圖卡有立體感 */
+// // box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+//  animation: fadeIn 1s ease;               /* 💡 保留您要求的緩緩浮現,讓圖卡緩緩浮現，更有質感 */
+// }
 
 
 .card {
-  width: 100%;         /* 💡 寬度撐滿父容器，解決太小的問題 */
-  max-width: 100%;     /* 確保不超過容器 */
-  height: auto;        /* 💡 高度隨比例自動調整 */
-  border-radius: 18px; /* 縮小圓角，避免切到邊緣文字 */
-  display: block;
-  margin: 15px 0;      /* * 增加上下間距，讓它呼吸 */
-  box-shadow: 0 15px 40px rgba(0,0,0,.25); /* 💡 保留您最愛的立體陰影,增加陰影，讓圖卡有立體感 */
-// box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  animation: fadeIn 1s ease;               /* 💡 保留您要求的緩緩浮現,讓圖卡緩緩浮現，更有質感 */
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.25);
+  animation: fadeIn 1s ease;
+  margin: 15px 0;
 }
+
+
+
+
 
 .fade{animation:fadeIn 1.4s ease;}
 @keyframes fadeIn{
@@ -265,35 +308,98 @@ function lifeNumber(dob) {
 }
 
 /* ====== 流程起始 ====== */
+// app.innerHTML = `
+// <h3>如果走到人生一個轉彎處</h3>
+// <p>現在最想關注哪個面向？</p>
+// <button onclick="step1('工作')">🧳 工作 / 事業</button>
+// <button onclick="step1('家庭')">🏠 家庭 / 關係</button>
+// <button onclick="step1('決策')">🧭 重大決策</button>
+// <button onclick="step1('自我')">🌱 自我狀態</button>
+// `;
+
+// 💡 1. 初始畫面 (請找到這一區塊覆蓋)
 app.innerHTML = `
-<h3>如果走到人生一個轉彎處</h3>
-<p>現在最想關注哪個面向？</p>
-<button onclick="step1('工作')">🧳 工作 / 事業</button>
-<button onclick="step1('家庭')">🏠 家庭 / 關係</button>
-<button onclick="step1('決策')">🧭 重大決策</button>
-<button onclick="step1('自我')">🌱 自我狀態</button>
+<div class="fade">
+  <h3>如果走到人生一個轉彎處</h3>
+  <p>現在最想關注哪個面向？</p>
+  <div class="options-container">
+    <button onclick="step1('工作')"><span class="small">🧳 工作 / 事業</span></button>
+    <button onclick="step1('家庭')"><span class="small">🏠 家庭 / 關係</span></button>
+    <button onclick="step1('決策')"><span class="small">🧭 重大決策</span></button>
+    <button onclick="step1('自我')"><span class="small">🌱 自我狀態</span></button>
+  </div>
+</div>
 `;
 
-function step1(v) { state.mode = v; app.innerHTML = `
-<h3>此刻的內在風景像哪一幅？</h3>
-<button class="option" onclick="step2('霧')">🌫️</button>
-<button class="option" onclick="step2('光')">🌅</button>
-<button class="option" onclick="step2('夜')">🌌</button>
-<button class="option" onclick="step2('風')">🌬️</button>`; }
+// function step1(v) { state.mode = v; app.innerHTML = `
+// <h3>此刻的內在風景像哪一幅？</h3>
+// <button class="option" onclick="step2('霧')">🌫️</button>
+// <button class="option" onclick="step2('光')">🌅</button>
+// <button class="option" onclick="step2('夜')">🌌</button>
+// <button class="option" onclick="step2('風')">🌬️</button>`; }
 
-function step2(v) { state.mood = v; app.innerHTML = `
-<h3>面對這樣的狀態</h3>
-<button onclick="step3('撐著不說')">💪😑 撐著不說</button>
-<button onclick="step3('靜下沉澱')">🧘‍♀️🧘🏼‍ 靜下沉澱</button>
-<button onclick="step3('找人聊聊')">💬👥 找人聊聊</button>
-<button onclick="step3('轉移注意')">🎧🤹‍ 轉移注意</button>`; }
 
-function step3(v) { state.coping = v; app.innerHTML = `
-<h3>你更渴望哪一種？</h3>
-<button onclick="step4('穩定')">🔥 穩定</button>
-<button onclick="step4('突破')">🚀 突破</button>
-<button onclick="step4('平衡')">⚖️ 平衡</button>
-<button onclick="step4('放下')">🍃 放下</button>`; }
+// 💡 2. step1 函式
+function step1(v) { 
+  state.mode = v; 
+  app.innerHTML = `
+  <div class="fade">
+    <h3>此刻的內在風景像哪一幅？</h3>
+    <div class="options-container">
+      <button onclick="step2('霧')"><span class="option">🌫️</span><span class="small">迷霧</span></button>
+      <button onclick="step2('光')"><span class="option">🌅</span><span class="small">晨曦</span></button>
+      <button onclick="step2('夜')"><span class="option">🌌</span><span class="small">星夜</span></button>
+      <button onclick="step2('風')"><span class="option">🌬️</span><span class="small">微風</span></button>
+    </div>
+  </div>`; 
+}
+
+
+// function step2(v) { state.mood = v; app.innerHTML = `
+// <h3>面對這樣的狀態</h3>
+// <button onclick="step3('撐著不說')">💪😑 撐著不說</button>
+// <button onclick="step3('靜下沉澱')">🧘‍♀️🧘🏼‍ 靜下沉澱</button>
+// <button onclick="step3('找人聊聊')">💬👥 找人聊聊</button>
+// <button onclick="step3('轉移注意')">🎧🤹‍ 轉移注意</button>`; }
+
+
+// 💡 3. step2 函式
+function step2(v) { 
+  state.mood = v; 
+  app.innerHTML = `
+  <div class="fade">
+    <h3>面對這樣的狀態</h3>
+    <div class="options-container">
+      <button onclick="step3('撐著不說')"><span class="option">💪😑</span><span class="small">撐著不說</span></button>
+      <button onclick="step3('靜下沉澱')"><span class="option">🧘‍♀️</span><span class="small">靜下沉澱</span></button>
+      <button onclick="step3('找人聊聊')"><span class="option">💬👥</span><span class="small">找人聊聊</span></button>
+      <button onclick="step3('轉移注意')"><span class="option">🎧🤹</span><span class="small">轉移注意</span></button>
+    </div>
+  </div>`; 
+}
+
+
+// function step3(v) { state.coping = v; app.innerHTML = `
+// <h3>你更渴望哪一種？</h3>
+// <button onclick="step4('穩定')">🔥 穩定</button>
+// <button onclick="step4('突破')">🚀 突破</button>
+// <button onclick="step4('平衡')">⚖️ 平衡</button>
+// <button onclick="step4('放下')">🍃 放下</button>`; }
+
+// 💡 4. step3 函式
+function step3(v) { 
+  state.coping = v; 
+  app.innerHTML = `
+  <div class="fade">
+    <h3>你更渴望哪一種？</h3>
+    <div class="options-container">
+      <button onclick="step4('穩定')"><span class="option">🔥</span><span class="small">穩定</span></button>
+      <button onclick="step4('突破')"><span class="option">🚀</span><span class="small">突破</span></button>
+      <button onclick="step4('平衡')"><span class="option">⚖️</span><span class="small">平衡</span></button>
+      <button onclick="step4('放下')"><span class="option">🍃</span><span class="small">放下</span></button>
+    </div>
+  </div>`; 
+}
 
 function step4(v) { state.desire = v; app.innerHTML = `
 <h3>請輸入你的西元出生年月日</h3>
@@ -382,7 +488,7 @@ async function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/17 AM 09:30 Ver 3.1.0<br>
+    2025/01/17 PM 02:25 Ver 3.1.2<br>
   </div>
   `;
 
