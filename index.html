@@ -27,7 +27,8 @@ body{
 //  max-width: 1600px; 
 
   width: calc(100% - 16px);
-  max-height: 2048 px; 
+  height: calc(100% - 16px);
+
  
   
   /* 2. 減少滑動：將高度限制放寬到 98vh，幾乎貼近螢幕邊緣，確保一畫面呈現完 */
@@ -49,14 +50,14 @@ body{
 @media screen and (min-width: 512px) {
  #app {
       background-color: orange
-      max-width: 512 px; 
+      width: 512 px; 
       }
       }
 
 @media screen and (min--width: 768px) {
  #app {
       background-color: purple
-      max-height: 768 px; 
+      width: 512 px;
       }
       }
 
