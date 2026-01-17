@@ -27,7 +27,7 @@ body{
 //  max-width: 1600px; 
 
   width: calc(100% - 16px);
-  height: calc(100% - 16px);
+  height: 84%;
 
  
   
@@ -48,6 +48,8 @@ body{
 }
 
 @media screen and (max-aspect-ratio: 1) {
+
+ alert(max-aspect-ratio);
  #app {
       background-color: orange
       width: 512 px; 
@@ -55,6 +57,7 @@ body{
       }
 
 @media screen and (min-aspect-ratio: 1.01 ) {
+ alert(max-aspect-ratio);
  #app {
       background-color: purple
       width: 512 px;
