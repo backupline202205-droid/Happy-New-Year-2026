@@ -14,7 +14,7 @@ body{
   transition:background 0.8s;
 }
 #wrapper{
-  min-height:100vh;
+  min-height:100dvh;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -23,9 +23,8 @@ body{
 
 #app {
   /* 1. 寬度大氣化：筆電與平板螢幕大，寬度放開到 800px，利用率立刻提升 */
- /* width: 95%; */
-  width: calc(100% - 40px);
-  max-width: 800px; 
+  width: calc(100% - 16px);
+  max-width: 1600px; 
   
   /* 2. 減少滑動：將高度限制放寬到 98vh，幾乎貼近螢幕邊緣，確保一畫面呈現完 */
   max-height: 98vh; 
@@ -35,12 +34,12 @@ body{
   border-radius: 26px;
   
   /* 3. 解決壓框與置中 */
-  padding: 40px; 
+  padding: 32px; 
   text-align: center; 
   
-  box-shadow: 0 20px 50px rgba(0,0,0,.18);
+  box-shadow: 0 32px 64px rgba(0,0,0,.18);
   box-sizing: border-box; 
-  margin: 10px auto; /* 減少 margin，爭取更多垂直空間 */
+  margin: 8px auto; /* 減少 margin，爭取更多垂直空間 */
 }
 
 
@@ -53,7 +52,7 @@ body{
 
 
 /* 4. 針對筆電/平板的大螢幕優化：讓 2x2 矩陣更寬，視覺更開闊 */
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
   .options-container {
     gap: 20px; /* 增加按鈕間距，大螢幕看起來更專業 */
   }
@@ -523,7 +522,7 @@ async function showResult() {
 <br>
     也期待您與我分享您的圖卡🎴<br>
 <br>
-    2025/01/17 PM 07:00 Ver 3.1.8<br>
+    2025/01/17 PM 08:30 Ver 3.2.0<br>
   </div>
   `;
 
